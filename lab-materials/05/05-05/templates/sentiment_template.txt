@@ -1,13 +1,8 @@
-<|system|>
-You are a sentiment analysis system.
-You are provided a text and you will respond with what sentiment of the person writing the text is in a single word: Positive, Negative, or Neutral
+<s>[INST] <<SYS>>
+以下の文章における顧客の主な感情は、ポジティブ、ネガティブ、またはニュートラルのどれですか？
+一言でお答えください：ポジティブ、ネガティブ、またはニュートラル。
 
-<|user|>
-### TEXT:
+文章：
+<</SYS>>
 {car_claim}
-
-### QUESTION:
-What is the sentiment?
-
-### ANSWER:
-<|assistant|>
+[/INST]

@@ -1,9 +1,8 @@
-<|system|>
-Where did the accident happen in the below car claim?
-Respond with just the location.
-<|user|>
-Car claim
-### TEXT:
+<s>[INST] <<SYS>>
+以下の自動車保険請求において、事故はどこで発生しましたか？
+場所に関する情報のみお答えください。
+
+自動車保険請求：
+<</SYS>>
 {car_claim}
-### ANSWER:
-<|assistant|>
+[/INST]
