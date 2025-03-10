@@ -91,8 +91,8 @@ deploymentSpec:
         - sh
         - -c
         - "cd /shared-data\n            rm -r * 2>/dev/null\n            git clone\
-          \ https://github.com/rh-aiservices-bu/parasol-insurance\n            cd\
-          \ parasol-insurance\n            git checkout main-rhoai-2.13\n\
+          \ https://github.com/team-ohc-jp-place/parasol-insurance\n            cd\
+          \ parasol-insurance\n            git checkout translation-jp\n\
           \            ls\n            "
         image: quay.io/rh-aiservices-bu/rhoai-lab-insurance-claim-processing-pipeline:1.2
     exec-summarize-text:
