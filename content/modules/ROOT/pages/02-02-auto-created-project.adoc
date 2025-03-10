@@ -1,27 +1,31 @@
-= 事前作成されたプロジェクトおよびパイプラインサーバー
+= Pre-Created project and pipeline server
 include::_attributes.adoc[]
 
-本ワークショップでは事前に必要なプロジェクトを作成し、さまざまな成果物を追加しています。
+In order to give you a feel for what "day 2" experience would be like, we have pre-created a Project for you, and started to populate it with various artifacts.
 
-// 製品についてさらに詳しく学びたい場合は、代わりに次の「DIY」セクションで、すべてをゼロから作成する手順を説明します。
+// If you want to learn more about the product and go deeper, the next ("DIY") section will walk you through the steps required to create all this from scratch instead.
 
-== プロジェクトを開く
+== Go to your project
 
-* まず、 {rhoai} ダッシュボードアプリケーションで、左側のメニューから「Data Science Projects」に移動します。
+* First, in the {rhoai} Dashboard application, navigate to the Data Science Projects menu on the left:
 +
 [.bordershadow]
 image::02/02-02-ds-proj-nav.png[]
 
-* 次に、 {user} というプロジェクトを開きます。
+* Then, open the project called {user}.
++
+[.bordershadow]
+image::02/02-02-open-project.png[]
 
-* プロジェクト内には、すでに作成済みのいくつかのアイテムが表示されているはずです。
+* Inside the project, by clicking on the different tabs, you should see a few items that already have been pre-created or configured for you:
 +
 [.bordershadow]
 image::02/02-02-pre-created-components.png[]
 
-* これらのコンポーネントは以下の通りです。
-1. Workbenches - これは、実験やトレーニングを行うためのIDE環境です。
-2. Cluster storage - これは、ワークベンチの永続ストレージ（Persistent Volume）です。
-3. Data connections - 既存の オブジェクトストレージとの通信に必要なすべての情報を含んでいます。モデルやパイプラインの成果物を保存するためにこれを使用します。
-4. Pipelines - データサイエンスパイプラインをインポートし実行します。
-
+* These components are as follows:
+1. Workbenches: a workbench has already been created - this is the environment that you can experiment and train models in.
+2. Pipelines: a pipeline server has already been configured so you can import or run data science pipelines right away. At the moment, it is empty, but we will populate it with a pipeline in a next section.
+3. Models: the models panel is empty at the moment.
+4. Cluster storage: this is where you find a persistent storage for your workbench and one for the pipeline we will create later.
+5. Data Connections: it contains all the information needed to connect with an existing S3 storage. We use it to store models and pipeline artifacts.
+6. Permissions: this is where you can manage the permissions for the project.

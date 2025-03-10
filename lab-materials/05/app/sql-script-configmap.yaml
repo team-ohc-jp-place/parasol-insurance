@@ -1,355 +1,337 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: sql-script-configmap
+  name: sql-script-configmap
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 data:
-    script.sql: |
-        CREATE SCHEMA IF NOT EXISTS claims
-        AUTHORIZATION claimdb;
+  script.sql: |  
+    CREATE SCHEMA IF NOT EXISTS claims
+    AUTHORIZATION claimdb;
 
-        DROP TABLE IF EXISTS claims.claims CASCADE;
-        DROP TABLE IF EXISTS claims.original_images CASCADE;
-        DROP TABLE IF EXISTS claims.processed_images CASCADE;
-        DROP SEQUENCE IF EXISTS claims.claims_id_seq CASCADE;
-        DROP SEQUENCE IF EXISTS claims.original_images_id_seq CASCADE;
-        DROP SEQUENCE IF EXISTS claims.processed_images_id_seq CASCADE;
+    DROP TABLE IF EXISTS claims.claims CASCADE;
+    DROP TABLE IF EXISTS claims.original_images CASCADE;
+    DROP TABLE IF EXISTS claims.processed_images CASCADE;
+    DROP SEQUENCE IF EXISTS claims.claims_id_seq CASCADE;
+    DROP SEQUENCE IF EXISTS claims.original_images_id_seq CASCADE;
+    DROP SEQUENCE IF EXISTS claims.processed_images_id_seq CASCADE;
 
-        -- SEQUENCE: claims.claims_id_seq
+    -- SEQUENCE: claims.claims_id_seq
 
-        CREATE SEQUENCE IF NOT EXISTS claims.claims_id_seq
+    CREATE SEQUENCE IF NOT EXISTS claims.claims_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+    -- Table: claims.claims
+
+    CREATE TABLE IF NOT EXISTS claims.claims
+    (
+        id integer NOT NULL DEFAULT nextval('claims.claims_id_seq'::regclass),
+        claim_number text COLLATE pg_catalog."default",
+        category text COLLATE pg_catalog."default",
+        policy_number text COLLATE pg_catalog."default",
+        client_name text COLLATE pg_catalog."default",
+        subject text COLLATE pg_catalog."default",
+        body text COLLATE pg_catalog."default",
+        summary text COLLATE pg_catalog."default",
+        location text COLLATE pg_catalog."default",
+        "time" text COLLATE pg_catalog."default",
+        sentiment text COLLATE pg_catalog."default",
+        CONSTRAINT claims_pkey PRIMARY KEY (id)
+    )
+    WITH (
+        OIDS = FALSE
+    )
+    TABLESPACE pg_default;
+
+    -- Link Table to Sequence    
+
+    ALTER SEQUENCE claims.claims_id_seq 
+        OWNED BY claims.claims.id;
+
+    -- SEQUENCE: claims.original_images_id_seq
+
+    CREATE SEQUENCE IF NOT EXISTS claims.original_images_id_seq
         INCREMENT 1
         START 1
         MINVALUE 1
         MAXVALUE 2147483647
         CACHE 1;
 
-        -- Table: claims.claims
-
-        CREATE TABLE IF NOT EXISTS claims.claims
-        (
-            id integer NOT NULL DEFAULT nextval('claims.claims_id_seq'::regclass),
-            claim_number text COLLATE pg_catalog."default",
-            category text COLLATE pg_catalog."default",
-            policy_number text COLLATE pg_catalog."default",
-            client_name text COLLATE pg_catalog."default",
-            subject text COLLATE pg_catalog."default",
-            body text COLLATE pg_catalog."default",
-            summary text COLLATE pg_catalog."default",
-            location text COLLATE pg_catalog."default",
-            "time" text COLLATE pg_catalog."default",
-            sentiment text COLLATE pg_catalog."default",
-            CONSTRAINT claims_pkey PRIMARY KEY (id)
-        )
-        WITH (
-            OIDS = FALSE
-        )
-        TABLESPACE pg_default;
-
-        -- Link Table to Sequence    
-
-        ALTER SEQUENCE claims.claims_id_seq 
-            OWNED BY claims.claims.id;
-
-        -- SEQUENCE: claims.original_images_id_seq
-
-        CREATE SEQUENCE IF NOT EXISTS claims.original_images_id_seq
-            INCREMENT 1
-            START 1
-            MINVALUE 1
-            MAXVALUE 2147483647
-            CACHE 1;
-
-        -- Table: claims.original_images
-
-        CREATE TABLE IF NOT EXISTS claims.original_images
-        (
-            id integer NOT NULL DEFAULT nextval('claims.original_images_id_seq'::regclass),
-            image_name text COLLATE pg_catalog."default" NOT NULL,
-            image_key text COLLATE pg_catalog."default" NOT NULL,
-            claim_id integer NOT NULL,
-            CONSTRAINT original_images_pkey PRIMARY KEY (id),
-            CONSTRAINT fk_claim_id FOREIGN KEY (claim_id)
-                REFERENCES claims.claims (id) MATCH SIMPLE
-                ON UPDATE CASCADE
-                ON DELETE CASCADE
-        )
-        WITH (
-            OIDS = FALSE
-        )
-        TABLESPACE pg_default;
-
-        -- Link Table to Sequence    
-
-        ALTER SEQUENCE claims.original_images_id_seq 
-            OWNED BY claims.original_images.id;
-
-        -- SEQUENCE: claims.processed_images_id_seq
-
-        CREATE SEQUENCE IF NOT EXISTS claims.processed_images_id_seq
-            INCREMENT 1
-            START 1
-            MINVALUE 1
-            MAXVALUE 2147483647
-            CACHE 1;
-
-        -- Table: claims.processed_images
-
-        CREATE TABLE IF NOT EXISTS claims.processed_images
-        (
-            id integer NOT NULL DEFAULT nextval('claims.processed_images_id_seq'::regclass),
-            image_name text COLLATE pg_catalog."default" NOT NULL,
-            image_key text COLLATE pg_catalog."default" NOT NULL,
-            claim_id integer NOT NULL,
-            CONSTRAINT processed_images_pkey PRIMARY KEY (id),
-            CONSTRAINT fk_claim_id FOREIGN KEY (claim_id)
-                REFERENCES claims.claims (id) MATCH SIMPLE
-                ON UPDATE CASCADE
-                ON DELETE CASCADE
-        )
-        WITH (
-            OIDS = FALSE
-        )
-        TABLESPACE pg_default;
-
-        -- Link Table to Sequence    
-
-        ALTER SEQUENCE claims.processed_images_id_seq 
-            OWNED BY claims.processed_images.id;
-
-        -----
-        -- INSERTS
-        -----
-        -- CLAIM1
-
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM202401', '複数車両', 'AC-987654321', 'サラ・ターナー','自動車事故の請求に関して - ポリシー番号：AC-987654321', '
-        パラソル保険 ご担当者様
-
-        お世話になっております。サラ・ターナーと申します。2024年1月2日午後3時30分頃に発生した最近の自動車事故について、このメールを書かせていただきます。私の保険のポリシー番号はAC-987654321です。
-
-        この事故はエバーグリーン市のバーチ通りとウィロー・アベニューの交差点で起こりました。私は黒いトヨタ・カムリ（ナンバープレート番号DEF-456）を運転しており、バーチ通りを南に向かっていました。その交差点では信号が青だったので、私はそのまま進んでいきました。
-        そのとき、もう一台の車、青いシボレー・トラバース（ナンバープレート番号GHI-789）がウィロー・アベニューを西に進んでいました。残念ながら、その運転手は赤信号を無視して進んでおり、私の車の前方の助手席側と衝突してしまいました。
-        その衝突で、両車ともに大きなダメージを受けました。私のトヨタ・カムリの前バンパーと右のヘッドライトはひどく損傷し、シボレー・トラバースの前ドライバー側もダメージを受けました。幸いなことに、この事故で怪我をすることはありませんでした。両運転手とも、車を道路脇に寄せることができました。
-
-        私はすぐに、相手の運転手であるダニエル・レイノルズさんと情報を交換しました。お互いの名前、電話番号、保険の詳細、そして事故の概要を共有しました。さらに、事故現場の写真も撮影しました。それには両車のダメージや信号の位置も写っています。
-        このメールには、写真やエバーグリーン警察署へ提出した警察報告書のコピー、車を修理見積もりに持ち込んだエバーグリーン・オート・リペアからの見積もりなど、必要な書類を添付いたしました。
-
-        この件について、迅速な対応と請求手続きの次のステップに関するご案内をお願いいたします。もし追加の情報や文書が必要であれば、お気軽に以下の連絡先までご連絡ください。
-
-        (555) 123-4567 / sarah.turner@email.com
-
-        この請求が速やかに解決されることを心よりお待ちしております。
-
-        サラ・ターナー
-        エバーグリーン市、オーク通り123番地
-        CA 98765
-        (555) 123-4567
-        sarah.turner@email.com
-        ',
-        '
-        承知しました。文章の要約は次の通りです。
-
-        サラ・ターナーが2024年1月2日午後3時30分頃に発生した自動車事故についてメールを書いています。
-        事故はエバーグリーン市のバーチ通りとウィロー・アベニューの交差点で起こりました。
-        サラは黒いトヨタ・カムリを運転しており、信号が青だったのでそのまま進んでいきました。
-        青いシボレー・トラバースが信号を無視して進み、衝突しました。
-        両車ともに大きなダメージを受けましたが、怪我人は出ませんでした。
-        サラはダニエル・レイノルズさんと情報を交換し、事故現場の写真を撮影しました。
-        必要な書類を添付しています。    
-        ',
-        'バーチ通りとウィロー・アベニューの交差点',
-        '2024年1月2日午後3時30分頃',
-        '承知しました。与えられた文章の感情は「肯定的」です。
-
-        文章からは、サラ・ターナーが事故の処理を進めたいと考えており、迅速な対応と請求手続きの次のステップに関する案内をお願いしていることがわかります。この事から、肯定の感情を持っていることが読み取れます。'
-        );
+    -- Table: claims.original_images
+
+    CREATE TABLE IF NOT EXISTS claims.original_images
+    (
+        id integer NOT NULL DEFAULT nextval('claims.original_images_id_seq'::regclass),
+        image_name text COLLATE pg_catalog."default" NOT NULL,
+        image_key text COLLATE pg_catalog."default" NOT NULL,
+        claim_id integer NOT NULL,
+        CONSTRAINT original_images_pkey PRIMARY KEY (id),
+        CONSTRAINT fk_claim_id FOREIGN KEY (claim_id)
+            REFERENCES claims.claims (id) MATCH SIMPLE
+            ON UPDATE CASCADE
+            ON DELETE CASCADE
+    )
+    WITH (
+        OIDS = FALSE
+    )
+    TABLESPACE pg_default;
 
-        -- CLAIM2
+    -- Link Table to Sequence    
 
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM202402', '複数車両', 'PT-567890', 'ジョン・T・アンダーソン','緊急：請求番号XYZ789に関する問題について', '
-        パラソル保険 ご担当者様
-
-        お世話になっております。私は、請求番号XYZ789に関するご対応について、大変な不満を感じております。この度の事故に関する連絡不足と遅れた対応は、私にとって容認できません。この問題について直ちに対処いただきたいと思います。
-        事故は2024年1月15日、午後3時45分頃に、リバータウンのメープルストリートとオークアベニューの交差点で発生いたしました。私の車であるSilver Hawk GTが、信号無視をしたとされるサマンサ・レイノルズさんに衝突され、前部には大きな損傷が生じました。この事故による損害は相当なものであり、エアバッグも展開しました。
-        事故直後に請求を申し出、詳細な説明や目撃者情報などを提供いたしました。しかし、貴社からの連絡がなかったり、遅れたりしており、非常に困惑しております。請求の進捗状況に関するアップデートもいまだに受け取っていない状況ですし、請求部門への連絡も、長い待ち時間とあまり役に立たない対応に遭遇しています。
-        この問題についての徹底的な調査と、遅延の理由についての説明を要求いたします。私は保険契約者として、適切な情報を適時に受け取る権利がありますし、この問題に対しては迅速で丁重な対応をお願いいたします。
-
-        また、貴社からの透明性やコミュニケーションの不足は、専門性を欠くばかりでなく、事故自体からのストレスや不便さをさらに悪化させています。私は請求処理を迅速に進め、支払い顧客として私に与えられる情報を提供するための即時の対応を期待しています。
-        顧客満足度を無視した貴社の姿勢には驚きを禁じ得ませんし、この問題が迅速にかつ満足のいく形で解決されない場合、適切な当局に問題を提起し、法的措置も検討せざるを得ません。
-        48時間以内に請求の状況に関する包括的なアップデートを要求いたします。この期限を守らない場合、私は貴社が利益を優先し、顧客の幸福を軽視しているという考えを強めざるを得ません。
-
-        この問題について、緊急かつ真剣な対応をお願いいたします。
-
-        以上、宜しくお願いいたします。
-
-        ジョン・T・アンダーソン
-        ポリシー番号：PT-567890
-        ',
-        '
-        承知しました。文章の要約は次の通りです。
-
-        事故の損害は大きく、エアバッグも展開した。
-        請求部門への連絡は長い待ち時間とあまり役に立たない対応だった。
-        貴社からの連絡がなかったり、遅れたりしている。
-        48時間以内に請求の状況に関する包括的なアップデートを要求している。
-        この問題に対して迅速で丁重な対応を要求している。
-        顧客満足度を無視した姿勢は好ましくないとしている。
-        ',
-        'リバータウンのメープルストリートとオークアベニューの交差点',
-        '2024年1月15日午後3時45分',
-        ' 承知しました。与えられた文章の感情は「否定的」です。
-        文章中には「 Pressure 」「不満」「困惑」「驚き」「不便」「軽視」などのネガティブなワードが多く登場し、また、「徹底的な調査と、遅延の理由についての説明を要求いたします。」や「法的措置も検討せざるを得ません。」という文もあることから、否定的な感情が感じられる文章であると判断できます。'
-        );
+    ALTER SEQUENCE claims.original_images_id_seq 
+        OWNED BY claims.original_images.id;
 
-        -- CLAIM3
+    -- SEQUENCE: claims.processed_images_id_seq
 
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM502803', '複数車両', 'AC-987654', 'ジェーン・ドウ','【緊急】自動車事故の請求に関しまして', '
-        パラソル保険株式会社 ご担当者様
-
-        突然すみません、最近自動車事故に巻き込まれ、対処に戸惑っている状況です。
-
-        事故は2024年1月15日の午後3時30分頃に発生しました。私はメイプル通りとエルム通りの交差点で車を運転しようとしていて、近くにはガソリンスタンドと「ブリュー・ヘイブン」というコーヒーショップがあります。これが重要な情報であるかどうかはわかりませんが…。
-        突然、青いクレストセダンという別の車が私の車の運転席側に衝突し、何が起こったのか分かりませんでした。キーキーという音や他の車からの警笛が鳴り、パニックになりました。
-        その日は曇りでしたが、雨が降っていたかどうかは思い出せません。この情報が重要である場合は申し訳ないです。また、これも重要な情報なのかわかりませんが、道路や交差点はかなり混雑していました。
-
-        私の車は運転席側にかなりの損傷を受けました。前のドアはへこんでおり、サイドミラーは糸でつながっている状態です。現在の状態では運転できません。青いクレストセダンも損傷していましたが、どこが損傷したのかはよく覚えていません。
-        相手の運転手とは情報交換できました。彼女の名前はサラ・ジョンソンで、電話番号（555-1234）、ナンバープレート番号（ABC123）、保険情報を入手しました。これが役立つことを願っています。
-
-        この後どうすればいいのかわかりません。特定の修理工場に行く必要があるのでしょうか？修理の見積もりを取得する必要がありますか？保険請求の手続きはどのように進めればよいのでしょうか？どんな助言や支援でも構いません、お返事いただけるとありがたいです。
-
-        ジェーン・ドウ
-        ポリシー番号：AC-987654
-        ',
-        '',
-        '',
-        '',
-        ''
-        );
+    CREATE SEQUENCE IF NOT EXISTS claims.processed_images_id_seq
+        INCREMENT 1
+        START 1
+        MINVALUE 1
+        MAXVALUE 2147483647
+        CACHE 1;
 
-        -- CLAIM4
+    -- Table: claims.processed_images
+
+    CREATE TABLE IF NOT EXISTS claims.processed_images
+    (
+        id integer NOT NULL DEFAULT nextval('claims.processed_images_id_seq'::regclass),
+        image_name text COLLATE pg_catalog."default" NOT NULL,
+        image_key text COLLATE pg_catalog."default" NOT NULL,
+        claim_id integer NOT NULL,
+        CONSTRAINT processed_images_pkey PRIMARY KEY (id),
+        CONSTRAINT fk_claim_id FOREIGN KEY (claim_id)
+            REFERENCES claims.claims (id) MATCH SIMPLE
+            ON UPDATE CASCADE
+            ON DELETE CASCADE
+    )
+    WITH (
+        OIDS = FALSE
+    )
+    TABLESPACE pg_default;
 
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM202415', '単体車両', 'BK-5165426', 'ドミニク・トレット','自動車保険に関する事故の申請について - ポリシー番号: BK-5165426', '
-        パラソル保険株式会社 ご担当者様
+    -- Link Table to Sequence    
 
-        お世話になっております。ドミニク・トレットと申します。
-        この度、私の自動車が関わった事故について、保険の申請をさせていただきたくご連絡いたしました。
-        事故は昨夜、ロサンゼルスの街中で発生しましたので、詳細をお知らせいたします。
-
-        【事故場所】
-        事故はロサンゼルスのダウンタウン、サンセット・ブルーバードとバイン・ストリートの交差点で発生しました。その夜は街がエンジンの音とネオンライトで賑わっていた、という状況です。
-
-        【事故の経緯】
-        事故の経緯についてご報告いたします。
-        私は友人たちと街をドライブしていたところ、突然カーチェイスに巻き込まれました。
-        相手をジョニー・トラン（仮名）としますが、ジョニーは私たちをかわそうとしていました。
-        しかし私たちはルールを守るつもりはありませんでした。
-
-        ジョニーは素早い動きで交通をかき分けていきましたが、
-        私は街の王として彼に本当のスピードを見せる必要がありました。
-        そのため、突然の出来事でしたが、私はフルスロットルで追いかけました。
-
-        しかし、そこに突然ウィンカーを出さずに左折した大型トラックが出てきました。
-        私は瞬時の判断を迫られ、映画のアクションシーンのように車をランプから飛ばしトラックをかわそうとしましたが、車は広告板に衝突し、数回転倒して最終的に止まりました。
-        残念ながら、完全に損壊してしまいました。
-
-        【被害状況】
-        私の車の被害については、前面が壊れ、窓ガラスが砕け、シャーシが認識できないほどねじれています。正直、修理不能な可能性が高いです。
-
-        事故は避けられないものですが、このような時には貴社がサポートしてくれるに違いないと期待しています。長年の顧客である私の請求を迅速かつ丁寧に処理していただけることを信じています。
-
-        請求手続きの具体的なステップについて、ご案内いただけますと幸いです。私は車を元通りに修理し、再び街で活躍させるために、必要な手続きを進めて参ります。
-
-        ご連絡をお待ちしております。
-
-        ドミニク・トレット
-        ',
-        '
-        ドミニク・トレットからの自動車保険請求の申請に関する連絡です。
-        ロサンゼルスのダウンタウン、サンセット・ブルーバードとバイン・ストリートの交差点での事故が発生しました。
-        ジョニー・トランとのカーチェイスに巻き込まれた経緯をお伝えします。
-        車が広告板に衝突し、前面や窓ガラスが損傷、シャーシもねじれた被害状況が生じています。
-        貴社による迅速かつ丁寧な請求処理を期待し、次の手続きの案内を希望します。
-        ',
-        'サンセット・ブルーバードとバイン・ストリートの交差点',
-        '文章には具体的な日時の記載はありませんが、事故が「昨夜」発生したことが述べられています。この表現から推測すると、事故が前日の夜に発生したことを意味します。',
-        '送信者の感情は「肯定的」です。彼は事故について説明し、保険の申請をするための手続きを進めたいと述べていますが、特に否定的な感情は示していません。事故の経緯や被害状況を詳細に伝えながら、保険会社に期待している様子が窺えます。'
-        );
-
-        -- CLAIM5
-
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM52125', '複数車両', 'AC-418324', 'ソール・グッドマン  ', '保険料分の仕事をしてください。自動車事故の請求について、緊急対応願います', '
-        パラソル保険様
-
-        お世話になります。
-        突然の事故による保険請求の件でご迷惑をおかけしておりますが、このメールを通じて問題解決に向けてのご協力をお願い申し上げます。
-
-        先日の事故につきまして、2023年3月28日午後4時15分頃、スプリングフィールド5番街とメインストリートの交差点で、
-        相手車による赤信号突破により側面から衝突されました。この事態により、私の保険請求が進行中であるにも関わらず、至急のご対応がなされていない点につきまして、深い怒りを感じています。
-
-        現在、請求の進捗が全く確認できず、対応の遅さには驚きを禁じ得ません。
-        本件については、明日までに詳細な調査結果と速やかな対応を要求させていただきます。これはあくまで要望ではなく、私の苛立ちと解決の緊急性に基づく必然的な要求です。
-
-        この問題には適切な対応をお願い申し上げます。具体的な行動計画と迅速な回答を期待しております。それが得られない場合、法的手段を含む追加の措置を検討せざるを得ません。
-
-        早急な解決を心よりお待ちしております。
-
-        ソール・グッドマン
-        ※ Cc： 私の17名のTwitterフォロワー
-
-        添付：警察報告書番号12345、事故の写真、通話とメールの記録
-        ',
-        '
-        保険請求に関してご迷惑をおかけしておりますが、解決に向けてご協力をお願いします。
-        2023年3月28日午後4時15分、スプリングフィールドの交差点で赤信号を無視され、側面から衝突されました。
-        現在、請求の進捗が確認できず、対応の遅さに驚いています。
-        明日までに詳細な調査結果と速やかな対応を要求します。
-        適切な対応と具体的な行動計画を期待しています。
-        ',
-        'スプリングフィールドの5番街とメインストリートの交差点で発生しました。',
-        '2023年3月28日午後4時15分頃',
-        '送信者の感情は「否定的」です。文章の中で、「深い怒りを感じています」「対応の遅さに驚いています」「苛立ちと解決の緊急性に基づく必然的な要求」「解決が得られない場合、法的手段を検討せざるを得ません」といった表現が使用されており、その内容から送信者が不満や不快感を感じていることが伝わってきます。'
-        );
-
-        INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
-        VALUES ('CLM605208', '複数車両', 'AC-768901', 'ティリオン・ランニスター', '緊急：キングズランディングでの衝突に関する請求審査', '
-        パラソル保険株式会社様
-
-        ティリオン・ランニスターと申します。今回は酒場ではなく、不愉快な自動車事故の対応に追われております。紛争解決の名手として知られておりますが、皮肉にも私自身が至急の対応を求められる事態に巻き込まれました。
-
-        以下、事故の詳細をご報告いたします：
-        2023年4月15日正午頃、キングズランディング内の市場周辺を車で移動中、別の車に衝突されました。相手はおそらくブラックウォーター湾の景色に見とれていて、道路を見失ったのだと思われます。この衝突により車が大きく損傷し、私の旅行計画も大きく影響を受けました。
-
-        事故からほぼ1ヶ月が経過しておりますが、小評議会の会議よりも保険請求の進展が遅いことに深く失望しております。この件について、48時間以内に徹底的な審査と速やかな更新をお願い申し上げます。これは単なる依頼ではなく、緊急の必要性と私の忍耐の限界に基づくものです。
-
-        この請求について真摯に対応していただけることを期待しております。詳細な回答と迅速な解決をお願い申し上げます。そうでない場合、王冠を巻き込む可能性のある追加の措置を検討せざるを得ません。
-
-        迅速な対応を心よりお待ちしております。
-
-        ティリオン・ランニスター
-
-        添付：車両の損傷写真、目撃証言、事件報告書番号 KL509
-        ',
-        '',
-        '',
-        '',
-        ''
-        );
-
-        -- IMAGES
-
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car0.jpg', 'original_images/car0.jpg', 1);
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car1.jpg', 'original_images/car1.jpg', 1);
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car2.jpg', 'original_images/car2.jpg', 2);
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car3.jpg', 'original_images/car3.jpg', 3);
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car5.jpg', 'original_images/car5.jpg', 3);
-        INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car6.jpg', 'original_images/car6.jpg', 3);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car0-processed.jpg', 'processed_images/car0-processed.jpg', 1);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car1-processed.jpg', 'processed_images/car1-processed.jpg', 1);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car2-processed.jpg', 'processed_images/car2-processed.jpg', 2);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car3-processed.jpg', 'processed_images/car3-processed.jpg', 3);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car5-processed.jpg', 'processed_images/car5-processed.jpg', 3);
-        INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car6-processed.jpg', 'processed_images/car6-processed.jpg', 3);
+    ALTER SEQUENCE claims.processed_images_id_seq 
+        OWNED BY claims.processed_images.id;
+
+    -----
+    -- INSERTS
+    -----
+    -- CLAIM1
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM202401', 'Multiple vehicle', 'AC-987654321', 'Sarah Turner','Claim for Recent Car Accident - Policy Number: AC-987654321', '
+    Dear Parasol Insurance,
+    
+    I hope this email finds you well. My name is Sarah Turner, and I am writing to file a claim for a recent car accident that occurred on January 2nd, 2024, at approximately 3:30 PM. My policy number is AC-987654321.
+
+    The accident took place at the intersection of Birch Street and Willow Avenue in the city of Evergreen. I was driving my vehicle, a black Toyota Camry with license plate number DEF-456, heading south on Birch Street. At the intersection, the traffic signal was green, and I proceeded through the intersection.
+
+    At the same time, another vehicle, a blue Chevrolet Traverse with license plate number GHI-789, was traveling west on Willow Avenue. Unfortunately, the driver failed to stop at the red traffic signal, resulting in a collision with the front passenger side of my vehicle.
+
+    The impact caused significant damage to both vehicles. The front bumper and right headlight of my Toyota Camry are extensively damaged, and there are also damages to the front driver''s side of the Chevrolet Traverse. Fortunately, no injuries were sustained during the accident, and both drivers were able to move their vehicles to the side of the road.
+
+    I promptly exchanged information with the other driver, Mr. Daniel Reynolds, including our names, phone numbers, insurance details, and a brief description of the accident. Additionally, I took photos of the accident scene, including the damages to both vehicles and the position of the traffic signal.
+
+    I have attached the necessary documents to this email, including the photos, a copy of the police report filed at the Evergreen Police Department, and the estimate for the repair costs from Evergreen Auto Repair, where I have taken my vehicle for assessment.
+
+    I kindly request your prompt attention to this matter and would appreciate any guidance on the next steps in the claims process. If you require any additional information or documentation, please do not hesitate to contact me at (555) 123-4567 or sarah.turner@email.com.
+
+    Thank you for your assistance, and I look forward to a swift resolution of this claim.
+
+    Sincerely,
+
+    Sarah Turner
+    123 Oak Street
+    Evergreen, CA 98765
+    (555) 123-4567
+    sarah.turner@email.com
+    ',
+    '
+    On January 2, 2024, at around 3:30 PM, a car accident occurred at the intersection of Birch Street and Willow Avenue in Evergreen. The involved parties were Sarah Turner, driving a black Toyota Camry (DEF-456), and Daniel Reynolds in a blue Chevrolet Traverse (GHI-789).
+
+    Sarah was heading south on Birch Street when Daniel failed to stop at the red traffic signal on Willow Avenue, causing a collision with Sarah''s vehicle. Both drivers exchanged information and took photos of the accident scene, which included damages to the front passenger side of Sarah''s Toyota Camry and the front driver''s side of Daniel''s Chevrolet Traverse. No injuries were reported.
+
+    Sarah has attached necessary documents, such as photos, a police report, and an estimate for repair costs, to her email. She requests prompt attention to the claim and is available at (555) 123-4567 or sarah.turner@email.com for any additional information or documentation needed.
+    ',
+    'Intersection of Birch Street and Willow Avenue in the city of Evergreen',
+    'January 2nd, 2024, at approximately 3:30 PM',
+    'The sender, Sarah Turner, expresses a polite and professional tone in her email. She is respectful and detailed in her description of the car accident and the subsequent steps she took to file a claim. She requests prompt attention to the matter and provides all necessary documentation. Overall, her sentiment is one of being proactive and cooperative in the claims process.'
+    );
+
+    -- CLAIM2
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM202402', 'Multiple vehicle', 'PT-567890', 'John T. Anderson','Urgent: Unacceptable Delay and Lack of Communication Regarding Claim #XYZ789', '
+    Dear Parasol Insurances,
+
+    I am writing to express my extreme dissatisfaction with the appalling service I have received concerning my recent claim, reference number #XYZ789. The lack of communication and delayed response from your company is utterly unacceptable, and I demand immediate attention to rectify this matter.
+
+    The accident occurred on January 15, 2024, at approximately 3:45 PM, near the intersection of Maple Street and Oak Avenue in Rivertown. My vehicle, a Silver Hawk GT, was struck by another driver, identified as Samantha Reynolds, who ran a red light at the aforementioned intersection. This incident resulted in substantial damage to the front end of my car, including severe structural damage and airbag deployment.
+
+    I reported the claim immediately after the accident, providing all necessary details, witness information, and a detailed description of the events leading up to the collision. However, the response—or lack thereof—from your company has been absolutely deplorable. I have yet to receive any updates on the status of my claim, and my attempts to contact your claims department have been met with prolonged hold times and unhelpful representatives.
+
+    I insist on a thorough investigation into this matter and demand an explanation for the unreasonable delay. It is my right as a policyholder to receive timely updates on the progress of my claim and to be treated with the respect and urgency that this situation demands.
+
+    Furthermore, the lack of transparency and communication from your company is not only unprofessional but also exacerbates the stress and inconvenience caused by the accident itself. I expect immediate action to be taken to expedite the processing of my claim and provide me with the information I am entitled to as a paying customer.
+
+    I am appalled at the disregard for customer satisfaction and the apparent negligence displayed by your company in handling my claim. If my concerns are not addressed promptly and to my satisfaction, I will have no choice but to escalate this matter to the appropriate regulatory authorities and consider legal action.
+
+    I demand a comprehensive update on the status of my claim within the next 48 hours. Failing to meet this deadline will only reinforce my belief that your company values its bottom line over the well-being of its customers.
+
+    I trust that you will treat this matter with the urgency and seriousness it deserves.
+
+    Sincerely,
+    John T. Anderson
+    Policy Number: PT-567890
+    ',
+    '
+    The text is a letter of complaint from John T. Anderson to Parasol Insurances regarding an unresolved car insurance claim, #XYZ789. The incident occurred on January 15, 2024, when Anderson''s vehicle was hit by another driver, Samantha Reynolds, who ran a red light. The accident caused significant damage to Anderson''s car, and he reported the claim immediately, providing all necessary details. However, he has experienced poor communication and a delayed response from Parasol Insurances. Anderson demands an explanation for the delay, transparency, and urgency in handling his claim. He threatens to escalate the matter to regulatory authorities and consider legal action if his concerns are not addressed promptly. Anderson requests a comprehensive update on the status of his claim within the next 48 hours.
+    ',
+    'Near the intersection of Maple Street and Oak Avenue in Rivertown',
+    'January 15, 2024, at approximately 3:45 PM',
+    'The sender of this claim is expressing extreme dissatisfaction with the handling of their insurance claim by Parasol Insurances. They are frustrated with the lack of communication and the significant delay in processing their claim. The tone of the message is demanding and assertive, with the sender threatening to escalate the matter if their concerns are not addressed promptly.'
+    );
+
+    -- CLAIM3
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM502803', 'Multiple vehicle', 'AC-987654', 'Jane Doe','Urgent: Car Accident Claim Assistance Needed', '
+    Dear Parasol Inc.,
+
+    I hope this email finds you well. I''m writing to, uh, inform you about, well, something that happened recently. It''s, um, about a car accident, and I''m not really sure how to, you know, go about all this. I''m kinda anxious and confused, to be honest.
+
+    So, the accident, uh, occurred on January 15, 2024, at around 3:30 PM. I was driving, or, um, attempting to drive, my car at the intersection of Maple Street and Elm Avenue. It''s kinda close to, um, a gas station and a, uh, coffee shop called Brew Haven? I''m not sure if that matters, but, yeah.
+
+    So, I was just, you know, driving along, and suddenly, out of nowhere, another car, a Blue Crest Sedan, crashed into the, uh, driver''s side of my car. It was like, whoa, what just happened, you know? There was this screeching noise and, uh, some honking from other cars, and I just felt really, uh, overwhelmed.
+
+    The weather was, um, kinda cloudy that day, but I don''t think it was raining. I mean, I can''t really remember. Sorry if that''s important. Anyway, the road, or, well, maybe the intersection, was kinda busy, with cars going in different directions. I guess that''s, you know, a detail you might need?
+
+    As for damages, my car has, uh, significant damage on the driver''s side. The front door is all dented, and the side mirror is, like, hanging by a thread. It''s not really drivable in its current, uh, state. The Blue Crest Sedan also had some damage, but I''m not exactly sure what because, you know, everything happened so fast.
+
+    I did manage to exchange information with the other driver. Their name is Sarah Johnson, and I got their phone number (555-1234), license plate number (ABC123), and insurance information. So, yeah, I hope that''s helpful.
+
+    I''m not sure what, um, steps I should take now. Do I need to go to a specific, uh, repair shop? Should I get a quote for the repairs? And, uh, how do I, you know, proceed with the insurance claim? I''m kinda lost here, and any guidance or assistance you can provide would be really, um, appreciated.
+
+    Sorry if this email is a bit all over the place. I''m just really, uh, anxious about the whole situation. Thank you for your understanding.
+
+    Sincerely,
+
+    Jane Doe
+    Policy Number: AC-987654
+    ',
+    '',
+    '',
+    '',
+    ''
+    );
+
+    -- CLAIM4
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM202415', 'Single vehicle', 'BK-5165426', 'Dominic Toretto','Claim for Car Accident - Policy #: BK-5165426', '
+    Dear Parasol Insurance Team,
+
+    I hope this email finds you well. I''m reaching out to file a claim regarding a recent incident involving my car, which is covered under my policy with Parasol. The accident occurred last night on the streets of Los Angeles, and I wanted to provide you with all the necessary details.
+
+    Location: The accident took place at the intersection of Sunset Boulevard and Vine Street in downtown Los Angeles. It was one of those crazy nights, where the streets were alive with the sound of engines and the glow of neon lights.
+
+    Circumstances: So, here''s the deal. I was out cruising with the crew, enjoying the vibe of the city, when suddenly we found ourselves in the middle of a high-speed chase. There was this dude, let''s call him Johnny Tran for the sake of this email, who thought he could outmaneuver us. Little did he know, we don''t play by the rules.
+
+    Anyway, Johnny pulled some slick moves, cutting through traffic like a bat outta hell. Naturally, being the king of the streets that I am, I had to show him what real speed looks like. So, I hit the nitrous and went full throttle.
+
+    But then, outta nowhere, this semi-truck decided to make a left turn without signaling. I had to make a split-second decision, and I ended up launching my car off a ramp, trying to clear the truck like we''re in one of those crazy action flicks. It was like something straight outta the movies, I tell ya.
+
+    Long story short, the stunt didn''t exactly go as planned. My car ended up crashing into a billboard, flipping over a couple of times before finally coming to a stop. Yeah, it was a total wreck. But hey, at least we walked away without a scratch, just a little shaken, not stirred, if you catch my drift.
+
+    Damage: As for the damage to my car, let''s just say it''s gonna need more than a few wrenches and some duct tape to fix this baby up. The front end is smashed in, the windows are shattered, and I''m pretty sure the chassis is twisted beyond recognition. It''s gonna take a miracle to get her back on the road.
+
+    I understand that accidents happen, but I''m counting on Parasol to have my back in times like these. I''ve been a loyal customer for years, and I trust that you''ll handle my claim with the same speed and precision that I handle my rides.
+
+    Please let me know what steps I need to take to get the ball rolling on this claim. I''m ready to do whatever it takes to get my car back in top shape and back on the streets where it belongs.
+
+    Looking forward to hearing from you soon.
+
+    Sincerely,
+    Dominic Toretto
+    ',
+    'The email is from a customer named Dominic Toretto, requesting to file a claim for a car accident that occurred in Los Angeles. He describes the incident as involving a high-speed chase with another driver named Johnny Tran, who cut through traffic and caused Dominic to take evasive action. Dominic attempted to clear the truck by launching his car off a ramp but ended up crashing into a billboard, causing significant damage to the front end, shattered windows, and possibly a twisted chassis. The sender expresses confidence in Parasol''s ability to handle the claim efficiently due to their long-term loyalty as a customer. They ask for guidance on the next steps to take in the claims process.',
+    'The event the claim is related to happened at the intersection of Sunset Boulevard and Vine Street in downtown Los Angeles.',
+    'The event described in the claim text occurred last night (no specific date mentioned) at an intersection in downtown Los Angeles, specifically at Sunset Boulevard and Vine Street. The exact time is not provided in the text.',
+    'The person sending the claim, identified as Dominic Toretto, expresses a positive sentiment towards Parasol Insurance and his expectation of them handling his claim efficiently. However, the tone of the email is also boastful and exaggerated, describing an unlikely series of events involving a car accident and a high-speed chase. Despite the unconventional circumstances, Dominic expresses confidence in Parasol''s ability to help him get his car repaired.'
+    );
+
+    -- CLAIM5
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM52125', 'Multiple vehicle', 'AC-418324', 'Saul Goodman', 'Where is My Money? Urgent Attention Needed for My Car Accident Claim', '
+    Dear Parasol Insurance Claims Department,
+
+    I am absolutely *thrilled* (read: infuriated) to be writing yet another heartfelt missive to the void that is your customer service. My recent car accident claim has vanished into the ether, much like my patience and the professionalism I expected from your company. How about we resolve this before the next ice age?
+
+    Let''s recap the blockbuster event:
+    On March 28, 2023, at around 4:15 PM, at the intersection of 5th Avenue and Main St in Springfield, my car was passionately sideswiped by another vehicle. Why? Because the other driver blasted through a red light and T-boned my car''s passenger side. It was a harrowing scene, made worse by your glacial pace of response.
+
+    It''s been over two weeks, and your commitment to delay is almost impressive. I demand a comprehensive review and prompt update on my claim within the next 24 hours. This isn''t just a request—it''s a necessity driven by sheer frustration and the urgent need for resolution.
+
+    Please treat this matter with the urgency it clearly deserves. I expect a detailed plan of action and a swift response, or be assured, further actions including legal recourse will be considered.
+
+    Looking forward to an expedited resolution,
+    Saul Goodman
+
+    CC: My 17 Twitter Followers
+
+    Attach: Police Report No. 12345, Photos of the Incident, Documented Calls and Emails
+    ',
+    'The text is a letter from a customer named Saul Goodman to the Parasol Insurance Claims Department regarding an unresolved car accident claim. The incident occurred on March 28, 2023, at the intersection of 5th Avenue and Main St in Springfield, where Saul''s car was hit by another vehicle that ran a red light. He is frustrated with the lack of progress on his claim, which has been ongoing for over two weeks. Saul demands a thorough review and update within 24 hours, threatening further actions if his request is not met. He attaches relevant documents, including a police report, photos of the incident, and records of calls and emails, to support his claim.',
+    'The event the claim is related to happened at the intersection of 5th Avenue and Main St in Springfield.',
+    'The car accident described in the text occurred on March 28, 2023, at around 4:15 PM.',
+    'The sentiment of the person sending this claim is one of frustration and urgency. They are expressing dissatisfaction with the delay in processing their car accident claim and threatening further action if it is not resolved promptly.'
+    );
+
+    INSERT INTO claims.claims (claim_number, category, policy_number, client_name, subject, body, summary, location, time, sentiment) 
+    VALUES ('CLM605208', 'Multiple vehicle', 'AC-768901', 'Tyrion Lannister', 'Urgent Claim Review Required: Collision in King''s Landing', '
+    Dear Parasol Insurance Claims Department,
+
+    This correspondence is from Tyrion Lannister, currently not in a tavern but rather dealing with the aftermath of an unpleasant vehicular incident. As a man known for resolving conflicts, I find myself ironically embroiled in one that requires your immediate attention.
+
+    Here are the distressing details:
+    On April 15, 2023, at about noon, within the confines of King''s Landing, my car was struck by another. As I navigated through the bustling streets near the marketplace, a distracted driver—likely admiring the view of the Blackwater Bay instead of the road—rammed into my car''s side. This not only caused significant damage to the vehicle but also disrupted my travel plans significantly.
+
+    Nearly a month has elapsed since the accident, and yet, I''ve seen more action in the Small Council meetings than in the progress of my claim. Your lack of promptness in handling this matter is both noted and distressing. I require an exhaustive review and a swift update on my claim within the next 48 hours. This is not a mere request, but a necessity fueled by urgent needs and dwindling patience.
+
+    Please address this claim with the seriousness it merits. I expect a detailed response and a rapid resolution, or rest assured, further actions, potentially involving the Crown, will be considered.
+
+    I await your expedited action,
+    Tyrion Lannister
+
+    CC: Master of Coin
+
+    Attach: Car Damage Photos, Eyewitness Accounts, Incident Report No. KL509
+    ',
+    '',
+    '',
+    '',
+    ''
+    );
+
+    -- IMAGES
+
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car0.jpg', 'original_images/car0.jpg', 1);
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car1.jpg', 'original_images/car1.jpg', 1);
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car2.jpg', 'original_images/car2.jpg', 2);
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car3.jpg', 'original_images/car3.jpg', 3);
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car5.jpg', 'original_images/car5.jpg', 3);
+    INSERT INTO claims.original_images (image_name, image_key, claim_id) VALUES ('car6.jpg', 'original_images/car6.jpg', 3);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car0-processed.jpg', 'processed_images/car0-processed.jpg', 1);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car1-processed.jpg', 'processed_images/car1-processed.jpg', 1);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car2-processed.jpg', 'processed_images/car2-processed.jpg', 2);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car3-processed.jpg', 'processed_images/car3-processed.jpg', 3);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car5-processed.jpg', 'processed_images/car5-processed.jpg', 3);
+    INSERT INTO claims.processed_images (image_name, image_key, claim_id) VALUES ('car6-processed.jpg', 'processed_images/car6-processed.jpg', 3);
+
+

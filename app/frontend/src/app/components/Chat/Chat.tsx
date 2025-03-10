@@ -15,7 +15,7 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
     type MessageHistory = Message[];
 
     const [queryText, setQueryText] = React.useState<Query>('');
-    const [answerText, setAnswerText] = React.useState<Answer>(['こんにちは！私はパラソルアシスタントです。何かお困りのことはありますか？']);
+    const [answerText, setAnswerText] = React.useState<Answer>([' Hi! I am Parasol Assistant. How can I help you today?']);
     const [answerSources, setAnswerSources] = React.useState<string[]>([]); // Array of sources for the answer
     const [messageHistory, setMessageHistory] = React.useState<MessageHistory>([]);
 
@@ -71,7 +71,7 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
             setAnswerText([]); // Clear the previous response
             setAnswerSources([]); // Clear the previous sources
             // Put the query in a JSON object so that we can add other info later
-            if (queryText != "") {
+            if (queryText != "" ) {
                 let data = {
                     query: queryText,
                     claim: claimSummary
@@ -79,17 +79,17 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
                 connection.current?.send(JSON.stringify(data)); // Send the query to the server
             } else {
                 setAnswerText(['Please enter a query...']);
-            }
-
-
-
+             }
+            
+            
+            
         };
     }
 
     const resetMessageHistory = () => {
         setMessageHistory([]);
         setAnswerSources([]);
-        setAnswerText(['こんにちは！私はパラソルアシスタントです。何かお困りのことはありますか？']);
+        setAnswerText(['Hi! I am Parasol Assistant. How can I help you today?']);
     };
 
     return (
@@ -152,7 +152,7 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
                                         type="text"
                                         onChange={(_event, queryText) => setQueryText(queryText)}
                                         aria-label="query text input"
-                                        placeholder='質問を入力して下さい。'
+                                        placeholder='Ask me anything...'
                                         onKeyPress={event => {
                                             if (event.key === 'Enter') {
                                                 event.preventDefault();
@@ -163,14 +163,14 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
                                     <Flex>
                                         <FlexItem>
                                             <Tooltip
-                                                content={<div>新しいチャットを開始</div>}
+                                                content={<div>Start a new chat</div>}
                                             >
                                                 <Button variant="link" onClick={resetMessageHistory} aria-label='StartNewChat'><FontAwesomeIcon icon={faPlusCircle} /></Button>
                                             </Tooltip>
                                         </FlexItem>
                                         <FlexItem align={{ default: 'alignRight' }}>
                                             <Tooltip
-                                                content={<div>質問を送信</div>}
+                                                content={<div>Send your query</div>}
                                             >
                                                 <Button variant="link" onClick={sendQueryText} aria-label='SendQuery'><FontAwesomeIcon icon={faPaperPlane} /></Button>
                                             </Tooltip>
@@ -182,7 +182,7 @@ const Chat: React.FunctionComponent<{ claimSummary: string }> = ({ claimSummary 
                     </StackItem>
                     <StackItem>
                         <TextContent>
-                            <Text className='chat-disclaimer'>AIによって動作しています。情報が正確でない場合があるため、念のため回答をご確認ください。</Text>
+                            <Text className='chat-disclaimer'>Powered by AI. It may display inaccurate info, so please double-check the responses.</Text>
                         </TextContent>
                     </StackItem>
                 </Stack>

@@ -1,17 +1,17 @@
-= 結果と次のステップ
+= Results
 include::_attributes.adoc[]
 
-== 取締役会はGoを出した!
+== Board was convinced!
 :slide:
 
-* 素晴らしいニュースです。 {company-name} がこのプロジェクトに全額出資することを決定しました!
-* これで、プロトタイピング フェーズからプロダクション フェーズに移行できます!
-* 我々は、商用ソリューションを構築し、実装するチームの一員とするため更なる人々を採用することを決定しました。
+* Great news! The {company-name} has decided to fully fund this project!
+* We can now move from the prototyping phase to the production phase.
+* We have decided to hire all of you fine people to be part of the team that will build and implement the complete solution.
 
-== 次のステップ
+== Next steps
 
-皆さんには様々な経歴や責任（開発者、ITインフラ、DevOps、データサイエンティストなど）があることは承知しています。
+We know that you all have various background and responsibilities (Coders, IT, DevOps, Data Scientists, etc..).
 
-しかし、皆さんが自分の専門領域で仕事を始める前に、プロトタイプの段階で行われたすべての作業をきちんと理解してほしいのです。
+So before you start working in your narrow area of specialization, we want you all to have a decent understanding of all the work that was done during the prototype phase.
 
-次の75分間は、プロトタイプ・フェーズで使用された様々なテクノロジーを理解するためのトレーニング・セッションです。
+The next 75 minutes is your official training session, for you to ramp up and gain an understanding of the various technologies involved during the prototype phase.

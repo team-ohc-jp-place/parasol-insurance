@@ -1,33 +1,32 @@
-= 自動車の検知（オプション）
+= Car recognition
 include::_attributes.adoc[]
 
-== はじめに
+== Introduction
 
-一つ前のノートブックでは、YOLO モデルが写真内の車を識別できることを確認しました。
-
-[.bordershadow]
-image::04/sample-car-image.png[c車の画像]
-
-YOLO は画像内の複数の車を検出できることがわかりました。ただし、どの車が識別されたかはわかりません。
+In our last notebook we confirmed that the YOLO model could identify cars in a photograph.
 
 [.bordershadow]
-image::04/multiple-car-images.png[複数の車]
+image::04/sample-car-image.png[car image]
+
+We discovered that YOLO is able to detect multiple cars in an image. However, we did not see which cars were identified.
 
 [.bordershadow]
-image::04/model-prediction-results.png[車を予測]
-
-上の画像では、YOLO モデルは 17 台の車と 1 台のトラックを識別しました。
-
-YOLO モデルによって識別された車の周囲にボックスを描画するコードを作成してみましょう。
+image::04/multiple-car-images.png[multiple cars]
 
 [.bordershadow]
-image::04/box-identified-cars.png[車を識別]
+image::04/model-prediction-results.png[predict cars]
 
-== (オプション)詳細なコードと実行
+In the above image, the yolo model identified 17 cars and 1 truck.
 
-このパートはオプション演習となります。そのため一旦スキップし、あとで実行することも可能です。
-このセクションについてさらに詳しく知りたい場合は、以下の指示に従ってください。
+Therefore we need to write some code that will draw boxes around the cars identified by the YOLO model.
 
-- 実行中のワークベンチで、フォルダー `parasol-insurance/lab-materials/04` に移動します。
-- `04-02-car-recognition.ipynb` というノートブックを探して開きます
-- ノートブックのセルを実行して、内容について確認しましょう。
+[.bordershadow]
+image::04/box-identified-cars.png[identify cars]
+
+== (Optional) Detailed code and execution
+
+If you want to dig deeper into this section, follow the instructions below. If you are pressed for time, you can skip to the next section.
+
+- In your running workbench, navigate to the folder `parasol-insurance/lab-materials/04`.
+- Look for (and open) the notebook called `04-02-car-recognition.ipynb`
+- Execute the cells of the notebook, and ensure you understand what is happening

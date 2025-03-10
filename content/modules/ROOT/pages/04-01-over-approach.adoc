@@ -1,26 +1,23 @@
-= 画像認識へのアプローチ
+= Overall Approach
 include::_attributes.adoc[]
 
-ここからのセクションでは画像認識について取り扱います。
-我々はプロトタイプアプリケーションの一部として、YOLOv8 モデルの使用を調査しました。
+As part of this prototype, we investigated the use of the YOLOv8 model.
+This model can be found online at https://www.yolov8.com[yolov8,window=_blank] and downloaded.
 
-このモデルは、 https://www.yolov8.com[yolov8,window=_blank] で公開されておりダウンロードして利用できます。
+== Image Processing Sections
 
-== 画像処理
+. We will first review its out-of-the-box capabilities.
+. We will then fine-tune it to allow it to do more specialized work for us.
+. Once we have a new, customized version of the model, we will deploy it in {rhoai} Model Serving.
+. Once that is done, we will send queries to it.
 
-. まず、ダウンロードしたモデルですぐに利用できる機能を確認します。
-. 次に、より専門的な作業を実行できるようにファインチューニングします。
-. 新しくカスタマイズされたバージョンのモデルが作成できたら、 {rhoai}  Model Serving を使いデプロイします。
-. 完了したら、クエリを送信します。
+== Image Processing Out-of-the-box capabilities
 
-
-== 画像処理 すぐに使える機能
-
-まず、一般的な車の画像に対しYOLOv8 モデルがどのように機能するかを調べてみましょう。
+Let's start by looking at a YOLOv8 model and explore how it works on static car images.
 
 [.bordershadow]
 image::04/sample-car-image.png[car image]
 
-- 実行中のワークベンチで、フォルダー  `parasol-insurance/lab-materials/04` に移動します。
-- `04-01-over-approach.ipynb` というノートブックを探して開きます
-- ノートブックのセルを実行して、内容について確認しましょう。
+- In your running workbench, navigate to the folder `parasol-insurance/lab-materials/04`.
+- Look for (and open) the notebook called `04-01-over-approach.ipynb`.
+- Execute the cells of the notebook, and ensure you understand what is happening.

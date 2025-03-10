@@ -21,8 +21,9 @@ DASHBOARD_ROUTE=https://$(oc get route rhods-dashboard -n redhat-ods-application
 
 # Define some variables
 WORKBENCH_NAME="my-workbench"
-WORKBENCH_IMAGE="ic-workbench:2.1.2"
+WORKBENCH_IMAGE="ic-workbench:1.2"
 PIPELINE_ENGINE="Tekton"
+BRANCH_NAME="main-rhoai-2.13"
 
 echo "Generating and apply resources for $USER_NAME..."
 
@@ -292,7 +293,7 @@ kind: Notebook
 metadata:
   annotations:
     notebooks.opendatahub.io/inject-oauth: 'true'
-    opendatahub.io/image-display-name: CUSTOM - Insurance Claim Processing Lab Workbench
+    opendatahub.io/image-display-name: CUSTOM - Parasol Insurance Claim Processing Lab Workbench
     notebooks.opendatahub.io/oauth-logout-url: >-
       $DASHBOARD_ROUTE/projects/$USER_PROJECT?notebookLogout=$WORKBENCH_NAME
     opendatahub.io/accelerator-name: ''
@@ -492,6 +493,6 @@ spec:
         args:
         - -ec
         - |-
-          pod_name=\$(oc get pods --selector=app=$WORKBENCH_NAME -o jsonpath='{.items[0].metadata.name}') && oc exec \$pod_name -- git clone https://github.com/rh-aiservices-bu/parasol-insurance
+          pod_name=\$(oc get pods --selector=app=$WORKBENCH_NAME -o jsonpath='{.items[0].metadata.name}') && oc exec \$pod_name -- git clone https://github.com/rh-aiservices-bu/parasol-insurance && cd parasol-insurance && git checkout $BRANCH_NAME
       restartPolicy: Never
 EOF

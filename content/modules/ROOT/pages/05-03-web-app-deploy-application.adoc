@@ -1,131 +1,74 @@
-= GitOpsによるアプリのデプロイ
+= Deploying the application via GitOps
 include::_attributes.adoc[]
 
-== {argocd} のインスタンスをデプロイする
-NOTE: GitOpsとは、インフラストラクチャとアプリケーションのデプロイおよび管理において、GitリポジトリをSingle source of truth（唯一の信頼できる情報源）として利用する運用手法です。このアプローチでは、Gitリポジトリにインフラやアプリケーションの設定・状態を定義したファイルを配置し、それを基に自動的に環境を構築・維持します。
+== Deploy the application(s) via GitOps
 
-OpenShift環境でGitOpsを使ったアプリケーションのデプロイを行うため、まずArgoCD インスタンスをあなたのNamespaceにデプロイします。 +
+We are going to use OpenShift GitOps/{argocd} to deploy the application in your namespace.
 
-- 次のテキストをコピーし、　{ocp-short} ターミナルに貼り付けて ArgoCD をデプロイします。
-+
-[.lines_space]
-[.console-input]
-[source, text]
-cat <<EOF | oc apply -f -
----
-apiVersion: argoproj.io/v1alpha1
-kind: ArgoCD
-metadata:
-  name: argocd
-spec:
-  sso:
-    dex:
-      openShiftOAuth: true
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 250m
-          memory: 128Mi
-    provider: dex
-  rbac:
-    defaultPolicy: "role:readonly"
-    policy: "g, system:authenticated, role:admin"
-    scopes: "[groups]"
-  server:
-    insecure: true
-    route:
-      enabled: true
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-EOF
-
-- 引き続きターミナルで、次のコマンドを実行して、 {argocd} デプロイメントのステータスを確認します。
-+
-[.lines_space]
-[.console-input]
-[source, text]
-oc rollout status deploy/argocd-server
-
-- 数秒後、デプロイメントが完了します:
+- Access the {argocd} Console by clicking on the link in the top right menu.
 +
 [.bordershadow]
-image::05/argocd-rollout.png[]
+image::05/05-open-argocd.png[]
 
-**オプション**: {argocd} について理解していて、そのインターフェースを確認したい場合は、次の詳細を確認してください。それ以外の場合は、次の手順に進んでください。
-[%collapsible]
-====
-Argo がデプロイされたので、ルートを介して UI に接続できます。
-
-- ターミナルで次のコマンドを実行して、 {argocd} インスタンスのルートを見つけましょう:
-+
-[.lines_space]
-[.console-input]
-[source, text]
-echo "   {argocd} UI : https://$(oc get route argocd-server -ojsonpath='{.status.ingress[0].host}')/ "
-
-- 次のようなものが表示されます:
+- Click on "Log in via OpenShift" to log in with your credentials.
 +
 [.bordershadow]
-image::05/argocd-route.png[]
-
-- これで、指定した認証情報 ({user}/{password}) を使用して ArgoCD UI に接続できます。
-====
-
-== GitOps でアプリケーションをデプロイ
-
-{argocd} があなたのNamespaceにデプロイされたので、これを使用して GitOps でアプリケーションをデプロイできます。
-
-- 次のテキストの内容をコピーし、 {ocp-short} ターミナルに貼り付けてアプリケーションをデプロイします。
+image::05/05-login-argocd-openshift.png[]
 +
-[.lines_space]
-[.console-input]
-[source, text, subs="attributes+"]
-cat <<EOF | oc apply -f -
----
+[.bordershadow]
+image::05/05-openshift-login.png[]
+
+- Once logged in, you will be redirected to the {argocd} Console. In the "Applications" tab, click on "Create Application".
++
+[.bordershadow]
+image::05/05-create-application.png[]
+
+- On the top right corner of the panel that opened, click on "Edit as YAML".
++
+[.bordershadow]
+image::05/05-edit-as-yaml.png[]
+
+- Copy the content of the following text, paste it in the editor (replace the default content), then click on "Save".
++
+[source, yaml, subs="attributes+"]
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: claim-insurance-app
+  name: claim-insurance-app-{user}
 spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: {user}
-  project: default
+  project: project-{user}
   source:
     path: lab-materials/05/app
-    repoURL: https://github.com/team-ohc-jp-place/parasol-insurance.git
-    targetRevision: translation-jp
+    repoURL: https://github.com/rh-aiservices-bu/parasol-insurance.git
+    targetRevision: main-rhoai-2.13
   syncPolicy:
     automated:
       prune: true
       selfHeal: false
     syncOptions: [CreateNamespace=false]
-EOF
-
-- {ocp-short} コンソールの Admin View を開きます
-
-[.bordershadow]
-image::05/05-switch-to-admin-view.jpg[]
-
-- アプリケーションが完全にデプロイされ、初期化されるまで待ちます。2 つのジョブ `db-init-job` と `populate-images` が完了したら、完了です (完了: 1/1)。
-
-[.bordershadow]
-image::05/jobs-completed.png[]
-
-- アプリケーションがデプロイされたら、次のコマンドでルートを確認できます。
-+
-[.lines_space]
-[.console-input]
-[.lines_space]
-[.console-input]
-[source, text]
-echo "   Application URL : https://$(oc get route ic-app -ojsonpath='{.status.ingress[0].host}')/ "
-
 +
 [.bordershadow]
-image::05/05-open-url.jpg[]
+image::05/05-application-yaml-save.png[]
 
-ブラウザで URL を開いてアプリケーションにアクセスし、次のステップに進みます。
+- Back on the form view, click on "Create".
++
+[.bordershadow]
+image::05/05-create-application-validation.png[]
+
+- The Application will start deploying. You can click on the Card to see the details.
++
+[.bordershadow]
+image::05/05-application-creation.png[]
+
+- After a few seconds, all the elements will be deployed, and the Application will report as "Healthy" and "Synced".
++
+[.bordershadow]
+image::05/05-application-deployed.png[] 
+
+- You can now access the application at the following URL:
+https://ic-app-{user}.{openshift_cluster_ingress_domain}/[https://ic-app-{user}.{openshift_cluster_ingress_domain}/,window=_blank]
+
+Open the the URL in your browser to access the application and head to the next step.

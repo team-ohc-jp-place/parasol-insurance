@@ -1,58 +1,58 @@
-= プロジェクトとパイプラインサーバーの作成
+= Creating your project and pipeline server
 include::_attributes.adoc[]
 
-重要: 自動作成されたプロジェクトを使用した場合は、このセクションを実行する必要はありません。プロジェクトとパイプラインサーバーの作成方法に興味がある場合のみ実行してください。
+IMPORTANT: If you've used the auto-created project, you do not need to perform this section. Only do so if you are interested in how a project and pipeline server are created.
 
-事前準備として、各自が次の作業を行います。.
+As a preliminary step, each of you is going to:
 
- データサイエンスプロジェクトの作成:
-** これにより、作業内容を整理しやすくなります
+. Create a Data Science project:
+** this will help keep your things together
 
-。データ接続を作成する：
-** パイプラインサーバーがアーティファクトを保存するために必要です。
+. Create a Data Connection:
+** we need that for the pipeline server to store its artifacts
 
-データサイエンスパイプラインサーバーをデプロイする：
-** 1つ必要になります。最初から作成する方が良いでしょう。
+. Deploy a Data Science Pipeline Server:
+** we will need one, and it's better to create it from the start
 
-ワークベンチを起動する：
-** コンテンツとノートブックを確認するために使用します。
+. Launch a Workbench:
+** we will use it to review content and notebooks
 
-gitリポジトリをワークベンチにクローンする：
-** プロトタイプのすべてのコードが含まれています
+. Clone the git repo into your Workbench:
+** this contains all the code from the prototype
 
-以下の手順では、これらのステップを順を追って説明します。 慎重に作業を進めてください。
+The instructions below will guide you through these steps. Follow them carefully.
 
-== プロジェクトの作成
+== Create a project
 
-* まず、 {rhoai} ダッシュボードアプリケーションで、左側のメニューからデータサイエンスプロジェクトに移動します。
+* First, in the {rhoai} Dashboard application, navigate to the Data Science Projects menu on the left:
 +
 [.bordershadow]
 image::02/02-02-ds-proj-nav.png[]
 
-* ユーザーIDと **同じ名前** でプロジェクトを作成します
-** 固有のユーザーIDが割り当てられました： `{user}`
-** 同じ名前でプロジェクトを作成する必要があります： `{user}`
+* Create a project with the **same name** as your user id
+** You have been assigned a unique user ID:  `{user}`
+** You need to now create a project with the exact same name: `{user}`
 +
-重要：割り当てられたユーザーは {user} です。間違えないようにしてください。間違えると、後で問題が発生する可能性があります
+IMPORTANT: Your assigned user is {user}. Don't mess that up or things will break later on
 
-* リソース名は変更しないでください
-* オプションとして、プロジェクトの説明に氏名を入力してください。
-* 以下のようになります。
+* Leave the resource name unchanged
+* Optionally, enter your first and last name in the description of the project.
+* It should look like this:
 +
 [.bordershadow]
 image::02/02-02-create-project.png[]
 +
-重要：スクリーンショットのように `userX` にしてはいけません。（あなたの場合、`X` は数字に置き換えてください）
+IMPORTANT: It should **NOT** be `userX` like in the screenshot. (for you, `X` should be a number instead)
 
-== パイプラインサーバーのデータ接続を作成
+== Create a Data Connection for the pipeline server
 
-* 目的に合ったシンプルなオブジェクトストレージとして機能させるために、クラスター内にMinioのインスタンスをデプロイしました。
-* これにポイントする **データ接続を追加** する必要があります。
+* We have deployed an instance of Minio in the cluster to act as a simple Object Storage for our purposes.
+* You will need to **Add data connection** that points to it.
 +
 [.bordershadow]
 image::02/02-02-add-dc.png[]
 
-* 入力が必要な情報は以下の通りです。
+* Here is the information you need to enter:
 ** Name:
 [.lines_space]
 [.console-input]
@@ -90,32 +90,32 @@ none
 [subs=attributes+]
 {user}
 +
-重要: もう一度言いますが、使用するバケットは、提供されたユーザーIDと一致している必要があります
+IMPORTANT: Once again, the bucket you will use has to match with the user ID you were provided
 
-* 結果は次のようになります。
+* The result should look like:
 +
 [.bordershadow]
 image::02/data-connection.png[]
 
-== パイプラインサーバーの作成
+== Create a Pipeline Server
 
-ワークベンチの作成前に、パイプラインサーバーを作成しておくことを強くお勧めします。 それでは、今から作成しましょう！
+It is highly recommended to create your pipeline server before creating a workbench. So let's do that now!
 
-* データサイエンスプロジェクト（DSP）で、 **[パイプラインサーバーの設定]** をクリックします
+* In your Data Science Project (DSP), click on **Configure pipeline Server**
 +
 [.bordershadow]
 image::02/02-02-pipelineserver01.png[]
 
-* 以前に作成したデータ接続（ **Shared Minio - pipelines** ）を使用して、「選択したデータ接続から認証情報をフォームに追加」というオプションのキードロップダウンを選択し、 **「パイプラインサーバーの設定」** ボタンをクリックします。
+* Select the Key Drop-Down with the option of *"Populate the form with credentials from your selected data connection"* using the Data Connection created earlier (**Shared Minio - pipelines**) and click the **Configure pipeline server** button:
 +
 [.bordershadow]
 image::02/02-02-pipelineserver02.png[]
 
-* パイプラインサーバーが準備できたら、画面は次のようになります。
+* When your pipeline server is ready, your screen will look like the following:
 +
 [.bordershadow]
 image::02/02-02-pipelineserver03.png[]
 
-この時点で、パイプラインサーバーは準備が整い、デプロイされます。
+At this point, your pipeline server is ready and deployed.
 
-重要：この画面が準備完了になるまで  **待機** する必要があります。画面がまだ回転している場合は、完了するまで待ちます。パイプラインサーバーが準備完了になる前にワークベンチを作成すると、そのワークベンチからデータサイエンスパイプラインをパイプラインサーバーに送信できなくなります。
+IMPORTANT: You need to **wait** until that screen is ready. If it's still spinning, wait for it to complete. If you continue and create your workbench **before** the pipeline server is ready, your workbench will not be able to submit Data Science pipelines to it.

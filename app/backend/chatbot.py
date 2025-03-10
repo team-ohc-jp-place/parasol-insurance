@@ -1,16 +1,17 @@
-import time
 import os
+import time
 from collections.abc import Generator
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.chains import RetrievalQA
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain_community.llms import VLLMOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_community.vectorstores import Milvus
-from milvus_retriever_with_score_threshold import MilvusRetrieverWithScoreThreshold
 from queue import Empty, Queue
 from threading import Thread
+
+from langchain.callbacks.base import BaseCallbackHandler
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.chains import LLMChain, RetrievalQA
+from langchain.prompts import PromptTemplate
+from langchain_community.llms import VLLMOpenAI
+from langchain_huggingface import HuggingFaceEmbeddings
+from milvus_retriever_with_score_threshold import \
+    MilvusRetrieverWithScoreThreshold
 
 
 class QueueCallback(BaseCallbackHandler):
@@ -41,46 +42,49 @@ class Chatbot:
             show_progress=False,
         )
 
-        self.rag_template = """<s>[INST] <<SYS>>
-                        あなたは「パラソルアシスタント」という名前の、親切で、敬意を持ち、正直なアシスタントです。
-                        あなたにはクレームの概要、情報提供のための参照、および質問が与えられます。これらの参照を活用して、できるだけこのクレームに基づいて質問に回答してください。
-                        できる限り役立つように回答し、安全に配慮してください。回答には有害、不道徳、人種差別的、性差別的、有毒、危険、または違法な内容を含めないようにしてください。社会的に偏りのない、前向きな性質の回答を心がけてください。
+        self.rag_template = """<|system|>
+                        You are a helpful, respectful and honest assistant named "Parasol Assistant".
+                        You will be given a claim summary, references to provide you with information, and a question. You must answer the question based as much as possible on this claim with the help of the references.
+                        Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
 
-                        質問が意味をなさない場合、または事実に沿っていない場合は、正確でない回答をするのではなく、その理由を説明してください。答えがわからない場合、偽の情報は共有しないでください。
-                        <</SYS>>
-
-                        クレーム概要:
+                        If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
+                        
+                        <|user|>
+                        Claim Summary:
                         {claim}
 
-                        参照: 
+                        References: 
                         {{context}}
 
-                        質問: {{question}} [/INST]"""
+                        Question: {{question}}
+                        <|assistant|>"""
 
-        self.rag_template_no_summary = """<s>[INST] <<SYS>>
-                        あなたは「パラソルアシスタント」という名前の、親切で、敬意を持ち、正直なアシスタントです。
-                        あなたには情報提供のためのコンテキストと質問が与えられます。このコンテキストに基づいて、できるだけ質問に回答してください。回答の中でコンテキストを使用していることには言及しないでください。
-                        できる限り役立つように回答し、安全に配慮してください。回答には有害、不道徳、人種差別的、性差別的、有毒、危険、または違法な内容を含めないようにしてください。社会的に偏りのない、前向きな性質の回答を心がけてください。
+        self.rag_template_no_summary = """<|system|>
+                        You are a helpful, respectful and honest assistant named "Parasol Assistant".
+                        You will be given a context to provide you with information, and a question. You must answer the question based as much as possible on this context. Please don't mention you are using a context in your response.
+                        Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
 
-                        質問が意味をなさない場合、または事実に沿っていない場合は、正確でない回答をするのではなく、その理由を説明してください。答えがわからない場合、偽の情報は共有しないでください。
-                        <</SYS>>
-
-                        コンテキスト: 
+                        If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
+                        
+                        <|user|>
+                        Context: 
                         {context}
 
-                        質問: {question} [/INST]"""
+                        Question: {question}
+                        <|assistant|>"""
 
 
     def format_sources(self, input_list):
         sources = ""
         if len(input_list) != 0:
-            sources += input_list[0].metadata["source"] + ', page: ' + str(input_list[0].metadata["page"])
-            page_list = [input_list[0].metadata["page"]]
+            sources += input_list[0].metadata["metadata"]["source"] + ', page: ' + str(input_list[0].metadata["metadata"]["page"])
+            page_list = [input_list[0].metadata["metadata"]["page"]]
             for item in input_list:
-                if item.metadata["page"] not in page_list: # Avoid duplicates
-                    page_list.append(item.metadata["page"])
-                    sources += ', ' + str(item.metadata["page"])
+                if item.metadata["metadata"]["page"] not in page_list: # Avoid duplicates
+                    page_list.append(item.metadata["metadata"]["page"])
+                    sources += ', ' + str(item.metadata["metadata"]["page"])
         return sources
+
 
     def stream(self, query, claim) -> Generator:
         # A Queue is needed for Streaming implementation
@@ -121,7 +125,7 @@ class Chatbot:
             search_params=None,
             k=int(self.config.get("MAX_RETRIEVED_DOCS", 4)),
             score_threshold=float(self.config.get("SCORE_THRESHOLD", 0.99)),
-            metadata_field="metadata",
+            enable_dynamic_field=True,
             text_field="page_content",
         )
 

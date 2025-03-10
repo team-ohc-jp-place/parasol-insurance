@@ -1,42 +1,45 @@
-= ラボ環境の検証
+= Validating the environment
 include::_attributes.adoc[]
 
-ワークベンチに接続したので、クラスタ内のすべてのサービスが正常に動作しているか確認しましょう。
+Now that you are connected to your workbench, let's make sure that all the expected services are responding properly in the cluster.
 
-ワークベンチで：
+In your workbench:
 
-. 左側のナビゲーションメニューで、次のフォルダに移動します：`parasol-insurance/lab-materials/02`
-. `02-05-validating.ipynb` というノートブックを開きます。
-. Jupyter Notebook でセルを実行したことがない場合、以下の手順に従ってください:
-.. **Restart kernel and Run all Cells** をクリックします:
+. In the left hand navigation menu, navigate to the folder called: `parasol-insurance/lab-materials/02`
+
+. Open the notebook called `02-05-validating.ipynb`
+
+. If you have never executed Cells in a Jupyter Notebook before, here is what you need to do:
+
+.. Click on the **Restart kernel and Run all Cells** link:
 +
 [.bordershadow]
 image::02/02-05-restart-and-run.png[]
-.. **Restart** をクリック :
+.. Click **Restart** :
 +
 [.bordershadow]
 image::02/02-05-restart-kernel.png[]
 +
-. これらのセルを実行すると、ラボで必要なすべてのサービスが応答していることが確認できます。
+. Running these cells will confirm that all the lab-required services are responding.
 
-出力は以下のようになります。
+The output should look as follows:
 
 [source,console]
 ----
 Success: Minio is reachable on minio.ic-shared-minio.svc.cluster.local:9000
 Success: Gitea is reachable on gitea.gitea.svc.cluster.local:3000
 Success: Postgres Database is reachable on claimdb.ic-shared-db.svc.cluster.local:5432
-Success: LLMサービス is reachable on llm.ic-shared-llm.svc.cluster.local:8000
-Success: LLMサービス-FlanT5 is reachable on llm-flant5.ic-shared-llm.svc.cluster.local:3000
+Success: LLM Service is reachable on llm.ic-shared-llm.svc.cluster.local:8000
+Success: LLM Service-FlanT5 is reachable on llm-flant5.ic-shared-llm.svc.cluster.local:3000
 Success: ModelMesh is reachable on modelmesh-serving.ic-shared-img-det.svc.cluster.local:8033
-Success: MilvusベクトルDB is reachable on vectordb-milvus.ic-shared-milvus.svc.cluster.local:19530
+Success: Milvus Vector DB is reachable on vectordb-milvus.ic-shared-milvus.svc.cluster.local:19530
 ----
 
-正しい出力が得られない場合は、 {ic} のインストラクターに連絡してください。
+If the output of this notebook looks suspicious, please inform the people leading the {ic}.
 
-== アーキテクチャ
+== Overall view
 
-以下は本ハンズオン環境のアーキテクチャの全体像です。
+This is a summarized visualization of how the environment is laid out:
 
 [.bordershadow]
 image::02/ic-eng-diag.drawio.svg[]

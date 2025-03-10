@@ -38,71 +38,71 @@ const routes: AppRouteConfig[] = [
   },
   {
     component: Empty,
-    label: 'ダッシュボード',
+    label: 'Dashboard',
     path: '#',
-    title: 'ダッシュボード'
+    title: 'Dashboard'
   },
   {
     component: Empty,
-    label: 'ポリシー管理',
+    label: 'Policies',
     path: '#',
-    title: 'ポリシー管理'
+    title: 'Policies'
   },
   {
     component: ClaimsList,
     exact: true,
-    label: '請求管理',
+    label: 'Claims',
     path: '/ClaimsList',
-    title: '請求管理',
+    title: 'Claims List',
   },
   {
     component: ClaimDetail,
     exact: true,
     path: '/ClaimDetail/:claim_id',
-    title: '請求情報',
+    title: 'Claim Detail',
   },
   {
     component: Empty,
-    label: '保証管理',
+    label: 'Coverages',
     path: '#',
-    title: '保証管理'
+    title: 'Coverages'
   },
   {
     component: Empty,
-    label: '個人年金保険管理',
+    label: 'Annuities',
     path: '#',
-    title: '個人年金保険管理'
+    title: 'Annuities'
   },
   {
     component: Empty,
-    label: 'サブスクリプション管理',
+    label: 'Subscriptions',
     path: '#',
-    title: 'サブスクリプション管理'
+    title: 'Subscriptions'
   },
   {
     component: Empty,
-    label: 'レポート',
+    label: 'Reports',
     path: '#',
-    title: 'レポート'
+    title: 'Reports'
   },
   {
     component: Empty,
-    label: 'システム管理',
+    label: 'Admin',
     path: '#',
-    title: 'システム管理'
+    title: 'Admin'
   },
   {
     component: Empty,
-    label: '設定',
+    label: 'Settings',
     path: '#',
-    title: '設定'
+    title: 'Settings'
   },
   {
     component: OriginalApp,
     exact: true,
-    label: '改修前システム',
+    label: 'Original App',
     path: '/OriginalApp',
-    title: '改修前システム',
+    title: 'Original App',
   },
 ];
 

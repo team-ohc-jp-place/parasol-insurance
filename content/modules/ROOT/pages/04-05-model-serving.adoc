@@ -1,17 +1,19 @@
-= モデルのサービング
+= Model Serving
 include::_attributes.adoc[]
 
-ファインチューニングしたモデルをOpenShift AIを使ってデプロイしましょう。
+. At this point, we need to deploy the model into {rhoai-short} model serving.
+. We will create another Data Connection...
+.. With almost identical information
+.. But we will change the bucket name from `{user}` to `models`
 
-* {rhoai-short} Model Servingを使用します。
-* 新たなData Connectionを作成します
-** あらかじめ準備されたものとほぼ同じ情報を使用します
-** ただし、バケット名を `{user}` から `models` に変更します
+== Create a Data Connection
 
-== データ接続の作成
+* In your Data Science project, on the Data Connection tab, click on **Add data connection** to create one that refers to the shared storage (Minio) where a copy of the model is stored.
++
+[.bordershadow]
+image::04/04-add-data-connection.png[]
 
-* データ サイエンス プロジェクトで、共有 minio を参照するデータ接続を作成します。
-* 入力する必要がある情報は次のとおりです。
+* Here is the info you need to enter:
 ** Name:
 [.lines_space]
 [.console-input]
@@ -49,21 +51,23 @@ none
 [subs=attributes+]
 models
 
-* 結果は次のようになります:
+* The result should look like:
 +
 [.bordershadow]
-image::04/model-data-connection.png[モデル接続]
+image::04/model-data-connection.png[model connection]
 
-== モデル サーバーを作成する
+== Create a Model Server
 
-プロジェクトでモデル サーバーを作成します。r:
+In your project, select the **Models** tab to create a model server:
 
-* "Multi-model serving platform" タイプのモデルでは, **Add model server** をクリックします:
+**VERY IMPORTANT**: in the following step, pay attention and select the right type of model server. Otherwise we would have to reset your project.
+
+* In the **Multi-model serving platform** type of model, the one on the right, click **Add model server**:
 +
 [.bordershadow]
 image::04/add-model-server.png[]
 
-* 入力する必要がある情報は次のとおりです:
+* Here is the info you need to enter:
 
 ** Model server name:
 [.lines_space]
@@ -94,7 +98,7 @@ Standard
 [.console-input]
 [source, text]
 [subs=attributes+]
-None
+None (bug: even when selecting `None`, the drop down will still show `Select...`)
 ** Model route
 [.lines_space]
 [.console-input]
@@ -109,23 +113,23 @@ unchecked
 unchecked
 
 
-* 結果は次のようになります:
+* The result should look like:
 +
 [.bordershadow]
 image::04/add-model-server-config.png[]
 
-* [**Add**] をクリックすると、モデル サーバーを作成できます。
+* You can click on **Add** to create the model server.
 
-== モデルのデプロイ
+== Deploy the Model
 
-プロジェクトの **Models and model servers** で、 **Deploy model** を選択します。
+Still in your project, on the **Models** tab, under **Models and model servers**:
 
-* **Deploy model** をクリックします:
+* Click **Deploy model**:
 +
 [.bordershadow]
 image::04/select-deploy-model.png[]
 
-* 入力する必要がある情報は次のとおりです:
+* Here is the information you will need to enter:
 
 ** Model name:
 [.lines_space]
@@ -138,7 +142,7 @@ My first Model
 [.console-input]
 [source, text]
 [subs=attributes+]
-My first Model Server
+My first Model Server (pre-filled)
 ** Model server - Model framework
 [.lines_space]
 [.console-input]
@@ -158,34 +162,35 @@ Shared Minio - model
 [subs=attributes+]
 accident/
 
-* 結果は次のようになります:
+* The result should look like:
 +
 [.bordershadow]
 image::04/deploy-a-model.png[]
 
-* **Deploy** をクリックします。
-* モデルが正常にデプロイされると、2 ～ 3 分後にステータスが緑色で表示されます。
+* Click on **Deploy**.
+* If the model is successfully deployed you will see its status as green after 15 to 30 seconds.
 +
 [.bordershadow]
 image::04/model-deployed-success.png[]
 
-クエリを実行して、モデルが実際に動作していることを確認します。
+We will now confirm that the model is indeed working by querying it!
 
-== サービングされたモデルへのクエリ
+== Querying the served Model
 
-モデルがデプロイされたら、クエリ可能なエンドポイントが表示されます。ここからモデルにリクエストを送信して結果を取得します。ノートブックの中で試したモデルとは異なり、このエンドポイントはクラスター内で作業しているすべての人が利用できます。アプリケーションから実行することも可能です。
+Once the model is served, we can use it as an endpoint that can be queried. We'll send a request to it, and get a result. And unlike our earlier notebook-based version, this applies to anyone working within our cluster. This could either be colleagues, or applications.
 
-* まず、モデル サーバーの URL を取得する必要があります。
-* これを行うには、 **Inference endpoint** 列の **Internal Service** リンクをクリックします。
-* ポップアップに、モデル サーバーの URL がいくつか表示されます。
+* First, we need to get the URL of the model server.
+* To do this, click on the **Internal Service** link under the **Inference endpoint** column.
+* In the popup, you will see a few URLs for our model server.
 +
 [.bordershadow]
 image::04/inference-url.png[]
 
-* **RestUrl** をメモするかコピーします。これは `\http://modelmesh-serving.{user}:8008` のようになります。
+* Note or copy the **RestUrl**, which should be something like `\http://modelmesh-serving.{user}:8008`
 
-この URL を使用してモデルをクエリします。
+We will now use this URL to query the model.
 
-- 実行中のワークベンチで、`parasol-insurance/lab-materials/04` フォルダーに移動します。
-- `04-05-model-serving.ipynb` というノートブックを探して開きます。
-- ノートブックのセルを実行して、何が起こっているかを確認します。
+- In your running workbench, navigate to the folder `parasol-insurance/lab-materials/04`.
+- Look for (and open) the notebook called `04-05-model-serving.ipynb`.
+- Execute the cells of the notebook, and ensure you understand what is happening.
+
