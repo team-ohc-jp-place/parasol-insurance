@@ -1,5 +1,10 @@
 # Parasol Insurance Workshop
 
+## 日本語版のデプロイ方法
+- RHDPでオリジナルの[Parasol Insurance AI Workshop](https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp-ai-parasol-insurance.prod&utm_source=webapp&utm_medium=share-link)を払い出す
+- ocコマンドが実行可能なLinux環境を準備し、OpenShiftクラスタにAdminでログイン
+- `workshop_deploy.sh`を実行
+
 ## Introduction
 
 This repository contains the code, instructions, resources and materials associated with the Lab called **Parasol Insurance Workshop**.
