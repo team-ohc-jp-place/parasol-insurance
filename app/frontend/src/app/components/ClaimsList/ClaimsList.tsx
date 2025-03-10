@@ -35,13 +35,13 @@ const ClaimsList: React.FunctionComponent = () => {
         category: claim.category,
         client_name: claim.client_name,
         policy_number: claim.policy_number,
-        status: claim.summary ? 'Processed' : 'New',
+        status: claim.summary ? '処理済み' : '新規',
     }));
 
     // Filter and sort
     const [searchText, setSearchText] = React.useState('');
-    const [formSelectValueCategory, setFormSelectValueCategory] = React.useState('Any category');
-    const [formSelectValueStatus, setFormSelectValueStatus] = React.useState('Any status');
+    const [formSelectValueCategory, setFormSelectValueCategory] = React.useState('すべてのカテゴリ');
+    const [formSelectValueStatus, setFormSelectValueStatus] = React.useState('すべてのステータス');
 
     const onChangeCategory = (_event: React.FormEvent<HTMLSelectElement>, value: string) => {
         setFormSelectValueCategory(value);
@@ -57,20 +57,20 @@ const ClaimsList: React.FunctionComponent = () => {
             .map(([_, value]) => value)
             .some(val => val.toString().toLowerCase().includes(searchText.toLowerCase())) // Search all fields with the search text
         && (
-            row.category === formSelectValueCategory || formSelectValueCategory === 'Any category' // Filter by category
+            row.category === formSelectValueCategory || formSelectValueCategory === 'すべてのカテゴリ' // Filter by category
         )
         && (
-            row.status === formSelectValueStatus || formSelectValueStatus === 'Any status' // Filter by status
+            row.status === formSelectValueStatus || formSelectValueStatus === 'すべてのステータス' // Filter by status
         )
     );
 
     const columnNames = {
         id: 'ID',
-        claim_number: 'Claim Number',
-        category: 'Category',
-        client_name: 'Client Name',
-        policy_number: 'Policy Number',
-        status: 'Status'
+        claim_number: '請求番号',
+        category: 'カテゴリ',
+        client_name: '顧客名',
+        policy_number: 'ポリシー番号',
+        status: 'ステータス'
     }
 
     // Index of the currently sorted column
@@ -125,15 +125,15 @@ const ClaimsList: React.FunctionComponent = () => {
 
     // Custom render for the status column
     const labelColors = {
-        'Processed': 'green',
-        'New': 'blue',
+        '処理済み': 'green',
+        '新規': 'blue',
     };
 
     return (
         <Page>
             <PageSection>
                 <TextContent>
-                    <Text component={TextVariants.h1}>Claims</Text>
+                    <Text component={TextVariants.h1}>請求一覧</Text>
                 </TextContent>
             </PageSection>
             <PageSection>
@@ -144,7 +144,7 @@ const ClaimsList: React.FunctionComponent = () => {
                             type="search"
                             onChange={(_event, searchText) => setSearchText(searchText)}
                             aria-label="search text input"
-                            placeholder="Search claims"
+                            placeholder="請求をを検索"
                             customIcon={<SearchIcon />}
                             className='claims-list-filter-search'
                         />
@@ -157,10 +157,10 @@ const ClaimsList: React.FunctionComponent = () => {
                             ouiaId="BasicFormSelectCategory"
                             className="claims-list-filter-select"
                         >
-                            <FormSelectOption key={0} value="Any category" label="Any category" />
-                            <FormSelectOption key={1} value="Single vehicle" label="Single vehicle" />
-                            <FormSelectOption key={2} value="Multiple vehicle" label="Multiple vehicle" />
-                            <FormSelectOption key={3} value="Theft" label="Theft" />
+                            <FormSelectOption key={0} value="すべてのカテゴリ" label="すべてのカテゴリ" />
+                            <FormSelectOption key={1} value="単体車両" label="単体車両" />
+                            <FormSelectOption key={2} value="複数車両" label="複数車両" />
+                            <FormSelectOption key={3} value="盗難" label="盗難" />
                         </FormSelect>
                     </FlexItem>
                     <FlexItem>
@@ -171,9 +171,9 @@ const ClaimsList: React.FunctionComponent = () => {
                             ouiaId="BasicFormSelectStatus"
                             className="claims-list-filter-select"
                         >
-                            <FormSelectOption key={0} value="Any status" label="Any status" />
-                            <FormSelectOption key={1} value="New" label="New" />
-                            <FormSelectOption key={2} value="Processed" label="Processed" />
+                            <FormSelectOption key={0} value="すべてのステータス" label="すべてのステータス" />
+                            <FormSelectOption key={1} value="新規" label="新規" />
+                            <FormSelectOption key={2} value="処理済み" label="処理済み" />
                         </FormSelect>
                     </FlexItem>
                 </Flex>

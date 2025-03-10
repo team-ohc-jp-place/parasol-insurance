@@ -66,7 +66,7 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
     <Page>
       <PageSection>
         <Breadcrumb ouiaId="BasicBreadcrumb" className='simple-padding'>
-          <BreadcrumbItem to="/ClaimsList">&lt; Back to claims</BreadcrumbItem>
+          <BreadcrumbItem to="/ClaimsList">&lt; 請求一覧に戻る</BreadcrumbItem>
         </Breadcrumb>
         <Grid span={12} hasGutter className='padding-top-25'>
           <GridItem span={8}>
@@ -79,12 +79,12 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
                     </Title>
                   </FlexItem>
                   <FlexItem>
-                    <Label color={labelColors[String(claim.summary ? 'Processed' : 'New')]}>{claim.summary ? 'Processed' : 'New'}</Label>
+                    <Label color={labelColors[String(claim.summary ? 'Processed' : 'New')]}>{claim.summary ? '処理済み' : '新規'}</Label>
                   </FlexItem>
                   <FlexItem align={{ default: 'alignRight' }}>
                     <TextContent>
                       <Text className='colored-item-blue'>
-                        <FontAwesomeIcon icon={faUser} />&nbsp;{claim.client_name ? claim.client_name : 'No client name specified'}
+                        <FontAwesomeIcon icon={faUser} />&nbsp;{claim.client_name ? claim.client_name : '不明な請求者'}
                       </Text>
                     </TextContent>
                   </FlexItem>
@@ -96,12 +96,12 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
                   <FlexItem>
                     <TextContent>
                       <Text className='colored-item-blue'>
-                        <FontAwesomeIcon icon={faShieldHalved} />&nbsp;{claim.policy_number ? claim.policy_number : 'No policy number specified'}
+                        <FontAwesomeIcon icon={faShieldHalved} />&nbsp;{claim.policy_number ? claim.policy_number : '不明なポリシー番号'}
                       </Text>
                     </TextContent>
                   </FlexItem>
                   <FlexItem>
-                    <Button className="disabled-link" variant="primary" isDisabled={true}>Edit</Button>
+                    <Button className="disabled-link" variant="primary" isDisabled={true}>編集</Button>
                   </FlexItem>
                 </Flex>
                 <Flex>
@@ -113,15 +113,15 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
                       aria-label="Tab navigation"
                       role="region"
                     >
-                      <Tab eventKey={0} title={<TabTitleText>Summary</TabTitleText>} aria-label="Summary">
+                      <Tab eventKey={0} title={<TabTitleText>概要</TabTitleText>} aria-label="Summary">
                         <Grid span={12} hasGutter>
                           <GridItem span={1} className='padding-top-25'>
                             <FontAwesomeIcon icon={faCalendarDays} className='icon-circle' />
                           </GridItem >
                           <GridItem span={11} className='padding-top-25'>
                             <TextContent>
-                              <Text component={TextVariants.h3}>Date and time</Text>
-                              <Text>{claim.time ? claim.time : 'Not processed yet'}</Text>
+                              <Text component={TextVariants.h3}>日時</Text>
+                              <Text>{claim.time ? claim.time : '未処理'}</Text>
                             </TextContent>
                           </GridItem>
                           <GridItem span={1} className='padding-top-25'>
@@ -138,7 +138,7 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
                           </GridItem >
                           <GridItem span={11} className='padding-top-25'>
                             <TextContent>
-                              <Text component={TextVariants.h3}>Summary</Text>
+                              <Text component={TextVariants.h3}>要約</Text>
                               <Text>{claim.summary ? claim.summary : 'Not processed yet'}</Text>
                             </TextContent>
                           </GridItem>
@@ -147,38 +147,38 @@ const ClaimDetail: React.FunctionComponent<ClaimProps> = () => {
                           </GridItem >
                           <GridItem span={11} className='padding-top-25'>
                             <TextContent>
-                              <Text component={TextVariants.h3}>Customer Sentiment</Text>
+                              <Text component={TextVariants.h3}>顧客の感情</Text>
                               <Text>{claim.sentiment ? claim.sentiment : 'Not processed yet'}</Text>
                             </TextContent>
                           </GridItem>
                         </Grid>
                       </Tab>
-                      <Tab eventKey={1} title={<TabTitleText>Insurance</TabTitleText>} aria-label="Insurance" isDisabled></Tab>
-                      <Tab eventKey={2} title={<TabTitleText>Damages</TabTitleText>} aria-label="Damages" isDisabled></Tab>
-                      <Tab eventKey={3} title={<TabTitleText>Witnesses</TabTitleText>} aria-label="Witnesses" isDisabled></Tab>
-                      <Tab eventKey={4} title={<TabTitleText>Documents</TabTitleText>} aria-label="Documents">
+                      <Tab eventKey={1} title={<TabTitleText>保険情報</TabTitleText>} aria-label="Insurance" isDisabled></Tab>
+                      <Tab eventKey={2} title={<TabTitleText>損害情報</TabTitleText>} aria-label="Damages" isDisabled></Tab>
+                      <Tab eventKey={3} title={<TabTitleText>目撃者情報</TabTitleText>} aria-label="Witnesses" isDisabled></Tab>
+                      <Tab eventKey={4} title={<TabTitleText>ドキュメント</TabTitleText>} aria-label="Documents">
                         <Accordion isBordered asDefinitionList={false} className='padding-top-25'>
                           <AccordionItem>
                             <AccordionToggle
                               onClick={() => toggle('claim-toggle1')}
                               isExpanded={expanded.includes('claim-toggle1')}
                               id="claim-toggle1">
-                              Original claim content
+                              自動処理前請求ドキュメント
                             </AccordionToggle>
                             <AccordionContent id="claim-content1" isHidden={expanded.includes('claim-toggle1')}>
                               <TextContent>
-                                <Text component={TextVariants.h3}>Subject:</Text>
+                                <Text component={TextVariants.h3}>件名:</Text>
                                 {claim.subject}
-                                <Text component={TextVariants.h3}>Body:</Text>
+                                <Text component={TextVariants.h3}>本文:</Text>
                                 <div className='display-linebreak'>{claim.body}</div>
-                                <Text component={TextVariants.h3}>Attached images:</Text>
+                                <Text component={TextVariants.h3}>添付画像:</Text>
                                 {claim && claim.original_images && <Grid><GridItem span={4}><ImageCarousel images={claim.original_images} /></GridItem></Grid>}
                               </TextContent>
                             </AccordionContent>
                           </AccordionItem>
                         </Accordion>
                       </Tab>
-                      <Tab eventKey={5} title={<TabTitleText>Comments</TabTitleText>} aria-label="Comments" isDisabled></Tab>
+                      <Tab eventKey={5} title={<TabTitleText>コメント</TabTitleText>} aria-label="Comments" isDisabled></Tab>
                     </Tabs>
                   </FlexItem>
                 </Flex>
