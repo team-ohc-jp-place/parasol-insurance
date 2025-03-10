@@ -31,10 +31,11 @@ while true; do
 done
 echo "done."
 
-# Replace all git repositories and showroom contents in all workbenches
+# Replace all git repositories, showroom contents in all workbenches, and ArgoCD AppProject sourceRepos
 echo -n "Replacing all git repositories in all workbenches... "
 oc get project | grep -E "^user[0-9][0-9]* " | awk '{print $1}' | while read project; do
   oc exec pods/my-workbench-0 -c my-workbench -n ${project} -- sh -c "rm -rf parasol-insurance; git clone https://github.com/team-ohc-jp-place/parasol-insurance; cd parasol-insurance; git checkout -b translation-jp origin/translation-jp"
+  oc patch -n openshift-gitops appproject project-${project} --type='json' -p='[{"op": "replace", "path": "/spec/sourceRepos/0", "value":"https://github.com/team-ohc-jp-place/parasol-insurance.git"}]'
   oc scale --replicas=0 deployment/showroom -n ${project}
   oc set env deployment/showroom GIT_REPO_URL="https://github.com/team-ohc-jp-place/parasol-insurance" -n ${project}
   oc set env deployment/showroom GIT_REPO_REF="translation-jp" -n ${project}
