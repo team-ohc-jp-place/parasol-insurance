@@ -2,7 +2,7 @@
 
 # Scale up a blank GPU machineset
 echo -n "Scaling up a blank GPU machineset... "
-machineset_gpu=$(oc get machineset -n openshift-machine-api | grep gpu | grep "  *0  *0  *" | awk '{print $1}')
+machineset_gpu=$(oc get machineset -n openshift-machine-api | grep gpu | grep "  *0  *0  *" | awk '{print $1}' | head -n 1)
 oc scale machineset/${machineset_gpu} --replicas=1 -n openshift-machine-api
 oc wait --for jsonpath='{.status.availableReplicas}'=1 --timeout 30m machineset/${machineset_gpu} -n openshift-machine-api
 echo "done."
