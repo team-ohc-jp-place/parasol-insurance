@@ -36,9 +36,9 @@ echo -n "Replacing all git repositories in all workbenches... "
 oc get project | grep -E "^user[0-9][0-9]* " | awk '{print $1}' | while read project; do
   oc exec pods/my-workbench-0 -c my-workbench -n ${project} -- sh -c "rm -rf parasol-insurance; git clone https://github.com/team-ohc-jp-place/parasol-insurance; cd parasol-insurance; git checkout -b translation-jp origin/translation-jp"
   oc patch -n openshift-gitops appproject project-${project} --type='json' -p='[{"op": "replace", "path": "/spec/sourceRepos/0", "value":"https://github.com/team-ohc-jp-place/parasol-insurance.git"}]'
-  oc scale --replicas=0 deployment/showroom -n ${project}
-  oc set env deployment/showroom GIT_REPO_URL="https://github.com/team-ohc-jp-place/parasol-insurance" -n ${project}
-  oc set env deployment/showroom GIT_REPO_REF="translation-jp" -n ${project}
-  oc scale --replicas=1 deployment/showroom -n ${project}
+  oc scale --replicas=0 deployment/showroom -n showroom-${GUID}-${project}
+  oc set env deployment/showroom GIT_REPO_URL="https://github.com/team-ohc-jp-place/parasol-insurance" -n showroom-${GUID}-${project}
+  oc set env deployment/showroom GIT_REPO_REF="translation-jp" -n showroom-${GUID}-${project}
+  oc scale --replicas=1 deployment/showroom -n showroom-${GUID}-${project}
 done
 echo "done."
