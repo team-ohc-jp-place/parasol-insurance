@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: insurance-claim-app
-          image: quay.io/rh-aiservices-bu/rhoai-lab-insurance-claim-app:2.2.1
+          image: quay.io/mmuraki/parasol_insurance_app:20250309
           ports:
             - containerPort: 5000
               protocol: TCP
@@ -29,9 +29,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: INFERENCE_SERVER_URL
-              value: http://granite-7b-instruct-predictor.ic-shared-llm.svc.cluster.local:8080/v1
+              value: http://llama-3-1-swallow-8b-instruct-v0-3-predictor.ic-shared-llm.svc.cluster.local:8080/v1
             - name: MODEL_NAME
-              value: 'granite-7b-instruct'
+              value: 'llama-3-1-swallow-8b-instruct-v0-3'
             - name: MAX_TOKENS
               value: '512'
             - name: TOP_P
