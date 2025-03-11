@@ -4,6 +4,71 @@
 - RHDPでオリジナルの[Parasol Insurance AI Workshop](https://catalog.demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp-ai-parasol-insurance.prod&utm_source=webapp&utm_medium=share-link)を払い出す
 - ocコマンドが実行可能なLinux環境を準備し、OpenShiftクラスタにAdminでログイン
 - `workshop_deploy.sh`を実行
+- 以下のような実行ログが表示され、全体でおよそ30分程度かかります
+
+```
+$ ssh lab-user@bastion.p5z9r.sandbox820.opentlc.com
+The authenticity of host 'bastion.p5z9r.sandbox820.opentlc.com (3.141.230.61)' can't be established.
+ED25519 key fingerprint is SHA256:ff91/IHddwNkHyTrlzH+d6a449VoicDCQUeGW0A1nfI.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'bastion.p5z9r.sandbox820.opentlc.com' (ED25519) to the list of known hosts.
+lab-user@bastion.p5z9r.sandbox820.opentlc.com's password: 
+
+[lab-user@bastion ~]$ git clone https://github.com/team-ohc-jp-place/parasol-insurance.git
+Cloning into 'parasol-insurance'...
+remote: Enumerating objects: 3615, done.
+remote: Counting objects: 100% (865/865), done.
+remote: Compressing objects: 100% (301/301), done.
+remote: Total 3615 (delta 659), reused 586 (delta 564), pack-reused 2750 (from 2)
+Receiving objects: 100% (3615/3615), 23.57 MiB | 25.41 MiB/s, done.
+Resolving deltas: 100% (1840/1840), done.
+
+[lab-user@bastion ~]$ cd parasol-insurance/
+[lab-user@bastion parasol-insurance]$ git checkout translation-jp
+branch 'translation-jp' set up to track 'origin/translation-jp'.
+Switched to a new branch 'translation-jp'
+
+[lab-user@bastion parasol-insurance]$ ./workshop_deploy.sh 
+Scaling up a blank GPU machineset... machineset.machine.openshift.io/cluster-p5z9r-lf29t-worker-gpu-us-east-2b scaled
+machineset.machine.openshift.io/cluster-p5z9r-lf29t-worker-gpu-us-east-2b condition met
+done.
+Replacing the applicationset... applicationset.argoproj.io/bootstrap configured
+done.
+Deleting the applications to be patched forcibly... Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+application.argoproj.io "ic-shared-llm-app" force deleted
+Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+application.argoproj.io "ic-shared-database-app" force deleted
+Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+application.argoproj.io "ic-shared-app" force deleted
+done.
+Wait for replaced applications being ready... done.
+Replacing all git repositories in all workbenches... Cloning into 'parasol-insurance'...
+Switched to a new branch 'translation-jp'
+branch 'translation-jp' set up to track 'origin/translation-jp'.
+appproject.argoproj.io/project-user1 patched
+deployment.apps/showroom scaled
+deployment.apps/showroom updated
+deployment.apps/showroom updated
+deployment.apps/showroom scaled
+Cloning into 'parasol-insurance'...
+branch 'translation-jp' set up to track 'origin/translation-jp'.
+Switched to a new branch 'translation-jp'
+appproject.argoproj.io/project-user2 patched
+deployment.apps/showroom scaled
+deployment.apps/showroom updated
+deployment.apps/showroom updated
+deployment.apps/showroom scaled
+Cloning into 'parasol-insurance'...
+branch 'translation-jp' set up to track 'origin/translation-jp'.
+Switched to a new branch 'translation-jp'
+appproject.argoproj.io/project-user3 patched
+deployment.apps/showroom scaled
+deployment.apps/showroom updated
+deployment.apps/showroom updated
+deployment.apps/showroom scaled
+done.
+```
 
 ## Introduction
 
