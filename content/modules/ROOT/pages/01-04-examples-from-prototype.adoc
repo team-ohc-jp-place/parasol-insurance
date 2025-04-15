@@ -1,46 +1,46 @@
-= Examples from prototyping work
+= プロトタイプの例
 include::_attributes.adoc[]
 
-The examples below are what we hope to achieve through our prototype version of the improved process.
+以下の例は、プロセス改良を通じて実現したいことです。
 
-== Using an LLM for text summarization
+== LLMによるテキスト要約
 
-* Allows for faster reading by the claims adjuster:
+* 請求査定担当者による迅速な読み取りを可能にする。
 +
 [.bordershadow]
 image::01/proto-summary.png[test image]
 
-== Using an LLM for information extraction
+== LLMによる情報の抽出
 
-* Extract key pieces of information for better population of database:
+* より良いデータベース作成のために、重要な情報を抽出する。
 +
 [.bordershadow]
 image::01/proto-info-extract.png[ info extraction]
 
-== Using an LLM for sentiment analysis
+== LLMによる感情分析
 
-* Detect tone of text, and potentially act on it:
+* 文章の意図を察知し、それに基づき行動する。
 +
 [.bordershadow]
 image::01/proto-sentiment-analysis.png[]
 
-== Using image recognition to frame vehicle(s) in pictures
+== 画像認識による車両写真の確認
 
-* Analyse images provided by customer:
+* 顧客により提供された写真を分析する。
 +
 [.bordershadow]
 image::01/proto-car-recog.png[]
 
-== Using image recognition to detect damage
+== 画像認識による損傷の検出
 
-* Assessment of damage based on picture:
+* 写真を元にした損傷具合の評価
 +
 [.bordershadow]
 image::01/proto-accident-grading.png[]
 
-== Web Application to review/process claims
+== 請求を確認/処理するための Web アプリケーション
 
-* Have an application that ties in these tools together and enables users to process the incoming claims more efficiently:
+* これらのツールを連携させ、ユーザーが受信した請求をより効率的に処理できるようにするアプリケーションを用意する
 +
 [.bordershadow]
 image::01/proto-claims-processing-app.png[]
