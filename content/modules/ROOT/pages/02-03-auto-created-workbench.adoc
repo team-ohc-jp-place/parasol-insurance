@@ -1,35 +1,33 @@
-= Pre-Created workbench
+= 事前作成されたワークベンチ
 include::_attributes.adoc[]
 
-Please head to the Workbenches tab.
+事前作成されたコンポーネントの1つがワークベンチです。
 
-One of the components that was pre-created for you is the workbench.
-
-* If you click on the arrow next to the workbench, you can see some of the libraries included in it as well as how much resources it has been given.
+* ワークベンチの横にあるアイコンをクリックすると、ワークベンチに含まれるライブラリの一部と、ワークベンチに割り当てられたリソースの量を確認できます。
 +
 [.bordershadow]
 image::02/02-03-pre-created-workbench-info.png[]
 
-* To connect to the workbench, click the **Open** link:
+* ワークベンチに接続するには、 [Open] リンクをクリックします。
 +
 [.bordershadow]
 image::02/02-03-open-link.png[]
 
-* Then:
+* 次に、
 
-** Authenticate with the same credentials as earlier:
-*** Your account id: `{user}`
-*** Your password: `{password}`
-* You will be asked to accept the following settings:
+** 以前と同じ認証情報でログインします。
+*** アカウントID： `{user}`
+*** パスワード： `{password}`
+* 以下の設定の承認を求められます。
 +
 [.bordershadow]
 image::02/02-02-accept.png[]
 
-* Click on *Allow selected permissions*
-* You should now see this:
+* [Allow selected permissions]をクリックします。
+* 次の画面が表示されます。
 +
 [.bordershadow]
 image::02/02-03-pre-created-jupyter.png[]
 
-* Note the extra folder called **parasol-insurance**. +
-* This folder has been cloned from github for you and will be the main working folder for this lab.
+* **parasol-insurance**というフォルダに注目してください。 +
+* このフォルダは、あなたのためにgithubからクローンされたもので、このラボのメインの作業フォルダとなります。
