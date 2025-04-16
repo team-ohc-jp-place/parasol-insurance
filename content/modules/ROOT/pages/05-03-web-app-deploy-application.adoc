@@ -1,16 +1,16 @@
-= Deploying the application via GitOps
+= GitOps経由でアプリケーションをデプロイする
 include::_attributes.adoc[]
 
-== Deploy the application(s) via GitOps
+== GitOps経由でアプリケーションをデプロイする
 
-We are going to use OpenShift GitOps/{argocd} to deploy the application in your namespace.
+OpenShift GitOps/{argocd} を使用して、アプリケーションを名前空間にデプロイします。
 
-- Access the {argocd} Console by clicking on the link in the top right menu.
+- 右上のメニューにあるリンクをクリックして、{argocd} コンソールにアクセスします。
 +
 [.bordershadow]
 image::05/05-open-argocd.png[]
 
-- Click on "Log in via OpenShift" to log in with your credentials.
+- "Log in via OpenShift"をクリックし、資格情報を使用してログインします。
 +
 [.bordershadow]
 image::05/05-login-argocd-openshift.png[]
@@ -18,17 +18,17 @@ image::05/05-login-argocd-openshift.png[]
 [.bordershadow]
 image::05/05-openshift-login.png[]
 
-- Once logged in, you will be redirected to the {argocd} Console. In the "Applications" tab, click on "Create Application".
+- ログインすると、{argocd}コンソールにリダイレクトされます。"Applications"タブで"Create Application"をクリックしてください。
 +
 [.bordershadow]
 image::05/05-create-application.png[]
 
-- On the top right corner of the panel that opened, click on "Edit as YAML".
+- 開いたパネルの右上隅にある"Edit as YAML"をクリックします。
 +
 [.bordershadow]
 image::05/05-edit-as-yaml.png[]
 
-- Copy the content of the following text, paste it in the editor (replace the default content), then click on "Save".
+- 次のテキストの内容をコピーし、エディターに貼り付けて（デフォルトの内容を置き換えて）、"Save"をクリックします。
 +
 [source, yaml, subs="attributes+"]
 apiVersion: argoproj.io/v1alpha1
@@ -53,22 +53,22 @@ spec:
 [.bordershadow]
 image::05/05-application-yaml-save.png[]
 
-- Back on the form view, click on "Create".
+- フォーム ビューに戻り、"Create"をクリックします。
 +
 [.bordershadow]
 image::05/05-create-application-validation.png[]
 
-- The Application will start deploying. You can click on the Card to see the details.
+- アプリケーションのデプロイが開始されます。カードをクリックすると詳細が表示されます。
 +
 [.bordershadow]
 image::05/05-application-creation.png[]
 
-- After a few seconds, all the elements will be deployed, and the Application will report as "Healthy" and "Synced".
+- 数秒後、すべての要素が展開され、アプリケーションは"Healthy"かつ"Synced"と報告します。
 +
 [.bordershadow]
 image::05/05-application-deployed.png[] 
 
-- You can now access the application at the following URL:
+- 次の URL からアプリケーションにアクセスできるようになりました。
 https://ic-app-{user}.{openshift_cluster_ingress_domain}/[https://ic-app-{user}.{openshift_cluster_ingress_domain}/,window=_blank]
 
-Open the the URL in your browser to access the application and head to the next step.
+ブラウザで URL を開いてアプリケーションにアクセスし、次のステップに進みます。
