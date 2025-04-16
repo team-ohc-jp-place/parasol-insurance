@@ -42,8 +42,8 @@ spec:
   project: project-{user}
   source:
     path: lab-materials/05/app
-    repoURL: https://github.com/rh-aiservices-bu/parasol-insurance.git
-    targetRevision: main-rhoai-2.13
+    repoURL: https://github.com/team-ohc-jp-place/parasol-insurance.git
+    targetRevision: translation-jp
   syncPolicy:
     automated:
       prune: true
