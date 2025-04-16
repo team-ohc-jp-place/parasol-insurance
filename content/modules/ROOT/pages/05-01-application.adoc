@@ -42,7 +42,7 @@ image::05/stop-workbench.png[]
 - Image セクションで、利用するコンテナイメージを `CUSTOM - VSCode for {ic}` に変更します。:
 +
 [.bordershadow]
-image::05/05-change-to-vscode.jpg[]
+image::05/05-change-to-vscode.png[]
 - これは、この特定の{ic-lab}に追加されたカスタムビルドのイメージです。{rhoai}プラットフォームではJupyter NotebookだけではなくVSCode Serverも利用することができます。
 
 - ページ下部の「Update workbench」をクリックしてください。
