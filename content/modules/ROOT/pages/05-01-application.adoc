@@ -30,9 +30,7 @@ image::05/application-architecture.drawio.svg[]
 
 +
 [.bordershadow]
-image::05/05-toggle-off-workbench.jpg[]
-
-
+image::05/05-toggle-off-workbench.png[]
 
 - 完全に停止するには、おそらく 5 秒から 10 秒かかります。
 
