@@ -50,7 +50,7 @@ image::03/03-06-unsaved-changes.png[]
 [.bordershadow]
 image::03/03-07-run-pipeline-ok.png[]
 
-. 「**ジョブの Data Science Pipelines への送信に成功しました」**というポップアップが表示されたら、「**詳細の実行」**リンクをクリックして、パイプラインの進行状況を確認します。
+. ** Job submission to Data Science Pipelines succeeded **というポップアップが表示されたら、** Run Details **リンクをクリックして、パイプラインの進行状況を確認します。
 
 == 実行のスケジュール
 
@@ -59,7 +59,7 @@ image::03/03-07-run-pipeline-ok.png[]
 
 . {rhoai} Data Science Projectに戻ります。
 . 先ほど実行したパイプラインを見つけます。
-. 行の一番最後の3つのドットをクリックし、「Create run」をクリックします。
+. 行の一番最後の3つのドットをクリックし、**Create run**をクリックします。
 +
 [.bordershadow]
 image::03/07-create-run.png[create run]
