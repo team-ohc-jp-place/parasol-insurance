@@ -14,13 +14,12 @@ image::05/05-new-app-claim-unprocessed.jpg[]
 
 == パイプラインの内容
 
-`parasol-insurance/lab-materials/05/05-05` に移動すると、さまざまなファイルが表示されます。+
+`parasol-insurance/lab-materials/05/05-05` に移動すると、さまざまなファイルが表示されます。 +
 
 [.bordershadow]
-image::05/05-process-claims-yaml.jpg[]
+image::05/05-process-claims-yaml.png[]
 
-
-今回は、**パイプライン** の **yaml 定義** である `process-claims-pipeline.yaml` を使用して請求を処理します。+
+今回は、**パイプライン** の **yaml 定義** である `process-claims-pipeline.yaml` を使用して請求を処理します。 +
 
 パイプラインの主なファイルとその機能は次のとおりです:
 
