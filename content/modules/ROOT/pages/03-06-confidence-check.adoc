@@ -59,7 +59,7 @@ image::03/03-07-run-pipeline-ok.png[]
 
 . {rhoai} Data Science Projectに戻ります。
 . 先ほど実行したパイプラインを見つけます。
-. 行の一番最後の3つのドットをクリックし、**Create run**をクリックします。
+. 行の一番最後の3つのドットをクリックし、**Create schedule**をクリックします。
 +
 [.bordershadow]
 image::03/07-create-run.png[create run]
