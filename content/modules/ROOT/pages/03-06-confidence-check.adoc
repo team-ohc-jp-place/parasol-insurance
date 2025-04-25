@@ -62,7 +62,7 @@ image::03/03-07-run-pipeline-ok.png[]
 . 行の一番最後の3つのドットをクリックし、**Create schedule**をクリックします。
 +
 [.bordershadow]
-image::03/07-create-run.png[create run]
+image::03/07-create-schedule.png[create schedule]
 
 . 次の画面で名前を指定し、**日**ごとに実行される定期実行を選択して、**作成**をクリックします。
 +
