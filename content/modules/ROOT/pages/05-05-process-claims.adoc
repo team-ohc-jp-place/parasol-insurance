@@ -58,12 +58,12 @@ image::05/05-data-pipeline-storage.png[]
 ** ファイルを自環境のどこかに保存します
 * 次に、 {rhoai} ダッシュボードに移動します
 * データサイエンスプロジェクトを選択します
-* **Pipelines** セクションが表示されるまでスクロールダウンします
+* **Pipelines** タブを選択します
 * **Import Pipeline** をクリックします
 +
 
 [.bordershadow]
-image::05/05-import-pipeline.jpg[import pipeline]
+image::05/05-import-pipeline.png[import pipeline]
 
 * ここで `process-claims-pipeline.yaml` ファイルをドラッグ＆ドロップするか、アップロードボタンを使用してアップロードします
 * その後、パイプラインに `Process Claims Pipeline` のような適切な名前を付けてください
@@ -76,11 +76,10 @@ image::05/05-import-pipeline-highlighted.jpg[imported pipeline]
 
 == パイプラインを実行する
 
-* 右側の設定に進んでください。
-* **Create Run** をクリックして、先ほど追加したパイプラインの新しい実行を作成します。
+* **Actions**から**Create Run** をクリックして、先ほど追加したパイプラインの新しい実行を作成します。
 +
 [.bordershadow]
-image::05/05-create-run.jpg[create run]
+image::05/05-create-run.png[create run]
 
 * 次の設定を使用します。
 ** Name:
@@ -89,12 +88,6 @@ image::05/05-create-run.jpg[create run]
 [source, text]
 [subs=attributes+]
 Process Claim Run
-** Run type:
-[.lines_space]
-[.console-input]
-[source, text]
-[subs=attributes+]
-Run once immediately after creation
 ** claim_id:
 [.lines_space]
 [.console-input]
@@ -130,7 +123,7 @@ image::05/05-process-claims.jpg[process]
 [.bordershadow]
 image::05/05-process-claim3-app.jpg[claim3processed]
 
-* 最後の請求をクリックしてください
+* 先ほどまで未処理だったCLM502803をクリックしてください
 * 長い本文ではなく、概要、場所、事故時刻、顧客感情のフィールドが表示されます
 * また、損害箇所を示す四角形が付いた新しい画像もご覧いただけます
 +
